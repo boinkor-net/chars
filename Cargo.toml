@@ -1,0 +1,9 @@
+[package]
+name = "chars"
+version = "0.1.0"
+authors = ["Andreas Fuchs <asf@boinkor.net>"]
+
+[dependencies]
+unicode_names = { git = 'https://github.com/antifuchs/unicode_names', branch = 'fix-for-rust-1-10' }
+unidecode = "0.2.0"
+unicode-width = "0.1.3"
