@@ -35,7 +35,7 @@ fn from_arg(spec: &str) -> Vec<Describable> {
     } else {
         unicode_names::character(spec).map(|c| res.push(Describable{c: c}));
     }
-    for base in vec![10, 16, 8, 2] {
+    for base in vec![16, 10, 8, 2] {
         let _ = u32::from_str_radix(spec, base.clone()).ok().
             map(|num| char::from_u32(num).map(|c| res.push(Describable{c: c})));
     }
@@ -67,7 +67,8 @@ fn from_arg_translates_descriptions() {
 #[test]
 fn from_arg_translates_numbers() {
     let received = from_arg("60");
-    assert_eq!('<', received[0].c);
-    assert_eq!('`', received[1].c);
-    assert_eq!('0', received[2].c);
+    let mut iter = received.iter();
+    assert_eq!('`', iter.next().unwrap().c);
+    assert_eq!('<', iter.next().unwrap().c);
+    assert_eq!('0', iter.next().unwrap().c);
 }
