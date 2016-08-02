@@ -73,18 +73,20 @@ impl fmt::Display for Codepoint {
 /// character description is not understood), or Some(Describable)
 /// that holds the character.
 fn from_arg(spec: &str) -> Vec<Describable> {
-    let mut res : Vec<Describable> = Vec::new();
+    let mut chars: Vec<char> = Vec::new();
 
     if spec.chars().count() == 1 {
-        spec.chars().next().map(|c| res.push(Describable{c: c}));
+        spec.chars().next().map(|c| chars.push(c));
     } else {
-        unicode_names::character(spec).map(|c| res.push(Describable{c: c}));
+        unicode_names::character(spec).map(|c| chars.push(c));
     }
     for base in vec![16, 10, 8, 2] {
         let _ = u32::from_str_radix(spec, base.clone()).ok().
-            map(|num| char::from_u32(num).map(|c| res.push(Describable{c: c})));
+            map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
-    res
+    chars.sort_by(|a, b| b.cmp(a));
+    chars.dedup();
+    chars.iter().map(|c| c.clone().into()).collect()
 }
 
 fn main() {
@@ -96,16 +98,15 @@ fn main() {
     }
 }
 
-
 #[test]
 fn from_arg_translates_chars() {
-    assert_eq!('c', from_arg("c")[0].c);
+    assert_eq!('n', from_arg("n")[0].c);
     assert_eq!(']', from_arg("]")[0].c);
 }
 
 #[test]
 fn from_arg_translates_descriptions() {
-    assert_eq!('c', from_arg("latin small letter c")[0].c);
+    assert_eq!('n', from_arg("latin small letter n")[0].c);
     assert_eq!(']', from_arg("right square bracket")[0].c);
 }
 
@@ -116,4 +117,7 @@ fn from_arg_translates_numbers() {
     assert_eq!('`', iter.next().unwrap().c);
     assert_eq!('<', iter.next().unwrap().c);
     assert_eq!('0', iter.next().unwrap().c);
+
+    assert_eq!(2, from_arg("0").len());
+    assert_eq!(0x30, from_arg("0").iter().next().unwrap().c as u32);
 }
