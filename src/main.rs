@@ -75,11 +75,19 @@ impl fmt::Display for Codepoint {
 fn from_arg(spec: &str) -> Vec<Describable> {
     let mut chars: Vec<char> = Vec::new();
 
+    // match the character itself, or any of its names:
     if spec.chars().count() == 1 {
         spec.chars().next().map(|c| chars.push(c));
     } else {
         unicode_names::character(spec).map(|c| chars.push(c));
     }
+    // Match hex strings specifically:
+    if spec.starts_with("0x") {
+        let _ = u32::from_str_radix(&spec[2..], 16).ok().
+            map(|num| char::from_u32(num).map(|c| chars.push(c)));
+    }
+
+    // Match plain numbers in all bases:
     for base in vec![16, 10, 8, 2] {
         let _ = u32::from_str_radix(spec, base.clone()).ok().
             map(|num| char::from_u32(num).map(|c| chars.push(c)));
@@ -120,4 +128,8 @@ fn from_arg_translates_numbers() {
 
     assert_eq!(2, from_arg("0").len());
     assert_eq!(0x30, from_arg("0").iter().next().unwrap().c as u32);
+
+    assert_eq!(1, from_arg("0x0").len());
+    assert_eq!(1, from_arg("0x41").len());
+    assert_eq!('A', from_arg("0x41")[0].c);
 }
