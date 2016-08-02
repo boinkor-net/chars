@@ -10,15 +10,60 @@ struct Describable {
 
 impl fmt::Display for Describable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        let cp : Codepoint = self.c.into();
+        try!(cp.fmt(f));
+        let quote : String = self.c.escape_default().collect();
+        try!(write!(f, ": prints as {}", quote));
         match unicode_names::name(self.c) {
-            // TODO: restructure this for high-bit chars
             Some(n) => {
-                let num = self.c as u32;
-                let quote : String = self.c.escape_default().collect();
-                write!(f, "{} = {}, {:}, 0x{:x}, 0{:o}, bits {:b}: prints as {}",
-                       self.c, n, num, num, num, num, quote)
+                write!(f, "\nUnicode name: {} = {}\n",
+                       self.c, n)
             },
-            None => write!(f, "{} is unknown", self.c)
+            None => write!(f, "\n")
+        }
+    }
+}
+
+impl std::convert::From<char> for Describable {
+    fn from(c: char) -> Describable {
+        Describable{c: c}
+    }
+}
+
+enum Codepoint {
+    ASCII7bit(char),
+    Latin1(char),
+    Unicode(char)
+}
+
+impl std::convert::From<char> for Codepoint {
+    fn from(c: char) -> Codepoint {
+        match c as u32 {
+            0 ... 128 => Codepoint::ASCII7bit(c),
+            128 ... 256 => Codepoint::Latin1(c),
+            _ => Codepoint::Unicode(c),
+        }
+    }
+}
+
+impl fmt::Display for Codepoint {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        match self {
+            &Codepoint::ASCII7bit(c) => {
+                let num = c as u32;
+                write!(f, "ASCII  {:02x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
+                       num, num, num, num, num)
+            }
+            &Codepoint::Latin1(c) => {
+                let num = c as u32;
+                write!(f, "LATIN1 {:x}, {:}, 0x{:x}, 0{:o}, bits {:b}",
+                       num, num, num, num, num)
+            }
+            &Codepoint::Unicode(c) => {
+                let num = c as u32;
+                write!(f, "UCS 4  {:x}, {:}, 0x{:x}, 0{:o}, bits {:b}",
+                       num, num, num, num, num)
+            }
         }
     }
 }
