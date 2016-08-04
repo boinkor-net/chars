@@ -61,12 +61,12 @@ impl fmt::Display for Printable {
                 for c in self.c.to_lowercase() {
                     caseflipped.push(c);
                 }
-                try!(write!(f, "\nLower case {}", caseflipped));
+                try!(write!(f, "\nUpper case. Downcases to {}", caseflipped));
             } else if self.c.is_lowercase() {
                 for c in self.c.to_uppercase() {
                     caseflipped.push(c);
                 }
-                try!(write!(f, "\nUpper case {}", caseflipped));
+                try!(write!(f, "\nLower case. Upcases to {}", caseflipped));
             }
 
             // If we have quotable text, print that too:
