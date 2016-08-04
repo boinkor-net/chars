@@ -16,12 +16,11 @@ impl fmt::Display for Describable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let cp : Codepoint = self.c.into();
         try!(cp.fmt(f));
-        let quote : String = self.c.escape_default().collect();
-        try!(write!(f, "; prints as {}", quote));
+        let printable : Printable = self.c.into();
+        try!(write!(f, "\n{}", printable));
         match unicode_names::name(self.c) {
             Some(n) => {
-                write!(f, "\nUnicode name: {} = {}\n",
-                       self.c, n)
+                write!(f, "\nUnicode name: {}\n", n)
             },
             None => write!(f, "\n")
         }
@@ -33,6 +32,52 @@ impl std::convert::From<char> for Describable {
         Describable{c: c}
     }
 }
+
+struct Printable {
+    c: char,
+}
+
+impl std::convert::From<char> for Printable {
+    fn from(c: char) -> Printable {
+        Printable{c: c}
+    }
+}
+
+
+impl fmt::Display for Printable {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        let quote : String = self.c.escape_default().collect();
+        if self.c.is_control() {
+            try!(write!(f, "Control character; quotes as {}", quote));
+        } else {
+            if ! self.c.is_whitespace() {
+                try!(write!(f, "Prints as {}", self.c));
+            } else {
+                try!(write!(f, "Prints as `{}'", self.c));
+            }
+            // Check if we can up/downcase:
+            let mut caseflipped = String::new();
+            if self.c.is_uppercase() {
+                for c in self.c.to_lowercase() {
+                    caseflipped.push(c);
+                }
+                try!(write!(f, "\nLower case {}", caseflipped));
+            } else if self.c.is_lowercase() {
+                for c in self.c.to_uppercase() {
+                    caseflipped.push(c);
+                }
+                try!(write!(f, "\nUpper case {}", caseflipped));
+            }
+
+            // If we have quotable text, print that too:
+            if quote.len() > 1 {
+                try!(write!(f, "\nQuotes as {}", quote));
+            }
+        }
+        Ok(())
+    }
+}
+
 
 enum Codepoint {
     ASCII7bit(char),
@@ -130,9 +175,9 @@ impl fmt::Display for ByteRepresentation {
 }
 
 /// Takes a stringly description of a character (the character itself,
-/// or a unicode code point name) and returns either None (if the
-/// character description is not understood), or Some(Describable)
-/// that holds the character.
+/// or a unicode code point name) and returns a Vec of Describable
+/// elements that hold the corresponding character. The elements of
+/// the vector are sorted by descending numeric code point.
 fn from_arg(spec: &str) -> Vec<Describable> {
     let mut chars: Vec<char> = Vec::new();
 
@@ -142,7 +187,7 @@ fn from_arg(spec: &str) -> Vec<Describable> {
     } else {
         unicode_names::character(spec).map(|c| chars.push(c));
     }
-    // Match hex strings specifically:
+    // Match hex/U+ strings specifically:
     if spec.starts_with("0x") || spec.starts_with("U+") {
         let _ = u32::from_str_radix(&spec[2..], 16).ok().
             map(|num| char::from_u32(num).map(|c| chars.push(c)));
