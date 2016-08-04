@@ -7,18 +7,18 @@ It's strongly inspired by
 [`ascii(1)`](http://www.catb.org/esr/ascii/), but supports unicode
 characters; it's also inspired by
 [`unicode.py`](http://kassiopeia.juls.savba.sk/~garabik/software/unicode/),
-but it attempts to support whitespace/control charaters better.
+but it attempts to support whitespace/control characters better.
 
 Cha(rs) is currently probably failing at some other edge case, but I
 hope not.
 
 ## Pronunciation
 
-How do you pronounce "chars"? This is a contended thing.
+How do you pronounce "chars"? This is a contentious thing.
 
 ## Installation
 
-Prereqs: I am building `chars` on Rust 1.10. Rusts at 1.8 and above
+Prereqs: I am building `chars` on Rust 1.10. Rusts at 1.9 and above
 should work, but no guarantees.
 
 ### Plain crate installation without source code
