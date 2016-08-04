@@ -13,6 +13,6 @@ version 1.4. See [CoC.md](CoC.md) for the full text.
 
 Feel free to:
 
-* [Report issues](../../../issues)
-* [Send me a pull request](../../../pulls) or
+* [Report issues](../../issues)
+* [Send me a pull request](../../pulls) or
 * Just get in touch with me: asf@boinkor.net!
