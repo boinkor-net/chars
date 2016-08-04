@@ -18,8 +18,9 @@ How do you pronounce "chars"? This is a contended thing.
 
 ## Installation
 
-Prereqs: I am building `chars` on Rust 1.10. Rusts at 1.8 and above
-should work, but no guarantees.
+Prereqs: I am building `chars` on Rust 1.10. I have heard reports that
+Rust 1.8 can't build this project, so there is a lower bound somewhere
+below 1.10.
 
 ### Plain crate installation without source code
 
