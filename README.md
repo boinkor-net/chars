@@ -12,6 +12,11 @@ How do you pronounce "chars"? This is a contended thing.
 Prereqs: I am building `chars` on Rust 1.10. Rusts at 1.8 and above
 should work, but no guarantees.
 
+### Plain crate installation without source code
+
+`cargo install --git https://github.com/antifuchs/chars.git`
+
+### Source installation
 1. Clone this repo
 2. `cargo install`
 
