@@ -1,7 +1,6 @@
 use std::char;
 
 use ascii;
-use super::Describable;
 use unicode_names;
 
 
@@ -9,7 +8,7 @@ use unicode_names;
 /// or a unicode code point name) and returns a Vec of Describable
 /// elements that hold the corresponding character. The elements of
 /// the vector are sorted by descending numeric code point.
-pub fn from_arg(spec: &str) -> Vec<Describable> {
+pub fn from_arg(spec: &str) -> Vec<char> {
     let mut chars: Vec<char> = Vec::new();
 
     // match the character itself, or any of its names:
@@ -30,7 +29,7 @@ pub fn from_arg(spec: &str) -> Vec<Describable> {
             map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
 
-    // Match ^-escapes as control-characters
+    // Match ^-escapes as control characters
     if spec.len() == 2 && spec.starts_with("^") {
         let control = spec.as_bytes()[1];
         match control {
@@ -46,40 +45,40 @@ pub fn from_arg(spec: &str) -> Vec<Describable> {
 
     chars.sort_by(|a, b| b.cmp(a));
     chars.dedup();
-    chars.iter().map(|c| c.clone().into()).collect()
+    chars
 }
 
 #[test]
 fn from_arg_translates_chars() {
-    assert_eq!('n', from_arg("n")[0].c);
-    assert_eq!(']', from_arg("]")[0].c);
+    assert_eq!('n', from_arg("n")[0]);
+    assert_eq!(']', from_arg("]")[0]);
 }
 
 #[test]
 fn from_arg_translates_descriptions() {
-    assert_eq!('n', from_arg("latin small letter n")[0].c);
-    assert_eq!(']', from_arg("right square bracket")[0].c);
+    assert_eq!('n', from_arg("latin small letter n")[0]);
+    assert_eq!(']', from_arg("right square bracket")[0]);
 }
 
 #[test]
 fn from_arg_translates_numbers() {
     let received = from_arg("60");
     let mut iter = received.iter();
-    assert_eq!('`', iter.next().unwrap().c);
-    assert_eq!('<', iter.next().unwrap().c);
-    assert_eq!('0', iter.next().unwrap().c);
+    assert_eq!('`', *iter.next().unwrap());
+    assert_eq!('<', *iter.next().unwrap());
+    assert_eq!('0', *iter.next().unwrap());
 
     assert_eq!(2, from_arg("0").len());
-    assert_eq!(0x30, from_arg("0").iter().next().unwrap().c as u32);
+    assert_eq!(0x30 as char, *from_arg("0").iter().next().unwrap());
 
     assert_eq!(1, from_arg("0x0").len());
     assert_eq!(1, from_arg("0x41").len());
-    assert_eq!('A', from_arg("0x41")[0].c);
+    assert_eq!('A', from_arg("0x41")[0]);
 }
 
 #[test]
 fn from_arg_translates_controls() {
-    assert_eq!(0x7f as char, from_arg("^?")[0].c);
-    assert_eq!(0x03 as char, from_arg("^c")[0].c);
-    assert_eq!(0x03 as char, from_arg("^C")[0].c);
+    assert_eq!(0x7f as char, from_arg("^?")[0]);
+    assert_eq!(0x03 as char, from_arg("^c")[0]);
+    assert_eq!(0x03 as char, from_arg("^C")[0]);
 }
