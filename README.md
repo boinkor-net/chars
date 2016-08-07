@@ -62,15 +62,23 @@ Look up a character by ambiguous "char code" handwaving:
 
 Screenshot:
 ```
-ASCII  10,  16, 0x10, 0020, bits 00010000
+ASCII 1/0,  16, 0x10, 0020, bits 00010000
 Control character; quotes as \u{10}
+Called: DLE
+Also known as: Data Link Escape
 
-ASCII  0a,  10, 0x0a, 0012, bits 00001010
+ASCII 0/a,  10, 0x0a, 0012, bits 00001010
 Control character; quotes as \n
+Called: LF, NL
+Also known as: Line Feed, Newline, \\n
 
-ASCII  08,   8, 0x08, 0010, bits 00001000
+ASCII 0/8,   8, 0x08, 0010, bits 00001000
 Control character; quotes as \u{8}
+Called: BS
+Also known as: Backspace, \\b
 
-ASCII  02,   2, 0x02, 0002, bits 00000010
+ASCII 0/2,   2, 0x02, 0002, bits 00000010
 Control character; quotes as \u{2}
+Called: STX
+Also known as: Start of Text
 ```
