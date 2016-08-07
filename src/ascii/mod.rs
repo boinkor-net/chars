@@ -12,9 +12,9 @@ pub fn lookup_by_name(name: &str) -> Option<char> {
 }
 
 pub fn additional_names(ch: char) -> Option<names::Information> {
-    let code = ch as u8;
+    let code = ch as usize;
     if code < 128 {
-        Some(names::PRINTABLE_CHARS[code as usize].clone())
+        Some(names::PRINTABLE_CHARS[code].clone())
     } else {
         None
     }
