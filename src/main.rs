@@ -8,6 +8,8 @@ use std::char;
 
 use byteorder::{ByteOrder, BigEndian};
 
+mod ascii;
+
 struct Describable {
     c: char,
 }
@@ -18,12 +20,39 @@ impl fmt::Display for Describable {
         try!(cp.fmt(f));
         let printable : Printable = self.c.into();
         try!(write!(f, "\n{}", printable));
-        match unicode_names::name(self.c) {
-            Some(n) => {
-                write!(f, "\nUnicode name: {}\n", n)
-            },
-            None => write!(f, "\n")
+        let unicode_name = unicode_names::name(self.c);
+        if let Some(n) = unicode_name.clone() {
+            try!(write!(f, "\nUnicode name: {}\n", n));
         }
+        if let Some(ascii) = ascii::additional_names(self.c) {
+            let mut synonyms = vec!();
+            let mut xmls: Option<&str> = None;
+            let mnemos: Vec<&str> = ascii.mnemonics.iter().filter(|n| n.len() != 1).map(|s| *s).collect();
+            for syn in ascii.synonyms {
+                if syn.starts_with('&') && syn.ends_with(';') {
+                    xmls = Some(syn);
+                } else if let Some(unicode) = unicode_name.clone() {
+                    if format!("{}", unicode).as_str().to_lowercase() != *syn.to_lowercase() {
+                        synonyms.push(syn.clone());
+                    }
+                } else {
+                    synonyms.push(syn.clone());
+                }
+            }
+            if mnemos.len() > 0 {
+                try!(write!(f, "Called: {}\n", mnemos.join(", ")));
+            }
+            if synonyms.len() > 0 {
+                try!(write!(f, "Also known as: {}\n", synonyms.join(", ")));
+            }
+            if let Some(xml) = xmls {
+                try!(write!(f, "Escapes in XML as: {}\n", xml));
+            }
+            if let Some(n) = ascii.note {
+                try!(write!(f, "Note: {}\n", n));
+            }
+        }
+        Ok(())
     }
 }
 
@@ -48,7 +77,7 @@ impl fmt::Display for Printable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let quote : String = self.c.escape_default().collect();
         if self.c.is_control() {
-            try!(write!(f, "Control character; quotes as {}", quote));
+            try!(write!(f, "Control character; quotes as {}\n", quote));
         } else {
             if ! self.c.is_whitespace() {
                 try!(write!(f, "Prints as {}", self.c));
@@ -102,8 +131,8 @@ impl fmt::Display for Codepoint {
         match self {
             &Codepoint::ASCII7bit(c) => {
                 let num = c as u32;
-                write!(f, "ASCII  {:02x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
-                       num, num, num, num, num)
+                write!(f, "ASCII {:1x}/{:1x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
+                       (num & 0xf0) >> 4, num & 0x0f, num, num, num, num)
             }
             &Codepoint::Latin1(c) => {
                 let num = c as u32;
@@ -198,6 +227,12 @@ fn from_arg(spec: &str) -> Vec<Describable> {
         let _ = u32::from_str_radix(spec, base.clone()).ok().
             map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
+
+    // Match characters by ascii(1) name / alias:
+    if let Some(ch) = ascii::lookup_by_name(spec) {
+        chars.push(ch);
+    }
+
     chars.sort_by(|a, b| b.cmp(a));
     chars.dedup();
     chars.iter().map(|c| c.clone().into()).collect()

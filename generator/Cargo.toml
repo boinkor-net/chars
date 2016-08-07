@@ -1,0 +1,11 @@
+[package]
+name = "generator"
+version = "0.1.0"
+authors = ["Andreas Fuchs <asf@boinkor.net>"]
+
+[dependencies]
+getopts = "0"
+regex = "0.1"
+lazy_static = "0.2.1"
+combine = "2.0.0-beta"
+combine-language = "2.0.0-beta"
