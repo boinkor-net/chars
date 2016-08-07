@@ -74,12 +74,18 @@ impl convert::From<char> for Printable {
     }
 }
 
+fn control_char(ch: char) -> char {
+    match ch as u8 {
+        0x7f => '?',
+        _ => ('@' as u8 + (ch as u8 & 0x1f)) as char
+    }
+}
 
 impl fmt::Display for Printable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let quote : String = self.c.escape_default().collect();
         if self.c.is_control() {
-            try!(write!(f, "Control character; quotes as {}\n", quote));
+            try!(write!(f, "Control character; quotes as {}, called ^{}\n", quote, control_char(self.c)));
         } else {
             if ! self.c.is_whitespace() {
                 try!(write!(f, "Prints as {}", self.c));
@@ -108,7 +114,6 @@ impl fmt::Display for Printable {
         Ok(())
     }
 }
-
 
 enum Codepoint {
     ASCII7bit(char),
