@@ -27,23 +27,29 @@ impl fmt::Display for Describable {
         if let Some(ascii) = ascii::additional_names(self.c) {
             let mut synonyms = vec!();
             let mut xmls: Option<&str> = None;
+            let mnemos: Vec<&str> = ascii.mnemonics.iter().filter(|n| n.len() != 1).map(|s| *s).collect();
             for syn in ascii.synonyms {
-                if let Some(unicode) = unicode_name.clone() {
-                    if syn.starts_with('&') && syn.ends_with(';') {
-                        xmls = Some(syn);
-                    } else if format!("{}", unicode).as_str().to_lowercase() != *syn.to_lowercase() {
+                if syn.starts_with('&') && syn.ends_with(';') {
+                    xmls = Some(syn);
+                } else if let Some(unicode) = unicode_name.clone() {
+                    if format!("{}", unicode).as_str().to_lowercase() != *syn.to_lowercase() {
                         synonyms.push(syn.clone());
                     }
+                } else {
+                    synonyms.push(syn.clone());
                 }
             }
+            if mnemos.len() > 0 {
+                try!(write!(f, "Called: {}\n", mnemos.join(", ")));
+            }
             if synonyms.len() > 0 {
-                try!(write!(f, "Also known as: {}", synonyms.join(", ")));
+                try!(write!(f, "Also known as: {}\n", synonyms.join(", ")));
             }
             if let Some(xml) = xmls {
-                try!(write!(f, "\nEscapes in XML as: {}", xml));
+                try!(write!(f, "Escapes in XML as: {}\n", xml));
             }
             if let Some(n) = ascii.note {
-                try!(write!(f, "\nNote: {}", n));
+                try!(write!(f, "Note: {}\n", n));
             }
         }
         Ok(())
@@ -71,7 +77,7 @@ impl fmt::Display for Printable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let quote : String = self.c.escape_default().collect();
         if self.c.is_control() {
-            try!(write!(f, "Control character; quotes as {}", quote));
+            try!(write!(f, "Control character; quotes as {}\n", quote));
         } else {
             if ! self.c.is_whitespace() {
                 try!(write!(f, "Prints as {}", self.c));
@@ -222,6 +228,7 @@ fn from_arg(spec: &str) -> Vec<Describable> {
             map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
 
+    // Match characters by ascii(1) name / alias:
     if let Some(ch) = ascii::lookup_by_name(spec) {
         chars.push(ch);
     }
