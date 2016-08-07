@@ -1,0 +1,464 @@
+# Master name table for the ASCII utility.
+# The colon-terminated field names are not interpreted, they're for human eyes.
+# Most of this file gets copied into one big C initializer.
+Mnemonics: "NUL",
+ISO names: "Null",
+C escape:  "\\0",
+%%
+Mnemonics: "SOH",
+ISO names: "Start Of Header",
+%%
+Mnemonics: "STX",
+ISO names: "Start of Text",
+%%
+Mnemonics: "ETX",
+ISO names: "End of Text",
+%%
+Mnemonics: "EOT",
+ISO names: "End Of Transmission",
+%%
+Mnemonics: "ENQ",
+ISO names: "Enquiry",
+%%
+Mnemonics: "ACK",
+ISO names: "Acknowledge",
+%%
+Mnemonics: "BEL",
+ISO names: "Bell",
+C escape:  "\\a",
+Synonyms:  "Alert",
+%%
+Mnemonics: "BS",
+ISO names: "Backspace",
+C escape:  "\\b",
+%%
+Mnemonics: "HT", "TAB",
+ISO names: "Character Tabulation", "Horizontal Tab",
+C escape:  "\\t",
+%%
+Mnemonics: "LF", "NL",
+ISO name: "Line Feed", "Newline",
+C escape:  "\\n",
+%%
+Mnemonics: "VT",
+ISO names: "Line Tabulation", "Vertical Tab",
+C escape: "\\v",
+%%
+Mnemonics: "FF",
+ISO names: "Form Feed",
+C escape:  "\\f",
+%%
+Mnemonics: "CR",
+ISO names: "Carriage Return",
+C escape:  "\\r",
+%%
+Mnemonics: "SO", "LS1",
+ISO names: "Shift Out", "Locking Shift 1",
+%%
+Mnemonics: "SI", "LS0",
+ISO names: "Shift In", "Locking Shift 0",
+%%
+Mnemonics: "DLE",
+ISO names: "Data Link Escape",
+%%
+Mnemonics: "DC1",
+ISO names: "Device Control 1",
+%%
+Mnemonics: "DC2",
+ISO names: "Device Control 2",
+%%
+Mnemonics: "DC3",
+ISO names: "Device Control 3",
+%%
+Mnemonics: "DC4",
+ISO names: "Device Control 4",
+%%
+Mnemonics: "NAK",
+ISO names: "Negative Acknowledge",
+%%
+Mnemonics: "SYN",
+ISO names: "Synchronous Idle",
+%%
+Mnemonics: "ETB",
+ISO names: "End of Transmission Block",
+%%
+Mnemonics: "CAN",
+ISO names: "Cancel",
+%%
+Mnemonics: "EM",
+ISO names: "End of Medium",
+%%
+Mnemonics: "SUB",
+ISO names: "Substitute",
+%%
+Mnemonics: "ESC",
+ISO names: "Escape",
+%%
+Mnemonics: "FS",
+ISO names: "File Separator",
+%%
+Mnemonics: "GS",
+ISO names: "Group Separator",
+%%
+Mnemonics: "RS",
+ISO names: "Record Separator",
+%%
+Mnemonics: "US",
+ISO names: "Unit Separator",
+%%
+Mnemonics: " ", "SP",
+ISO names: "Space", "Blank",
+%%
+Mnemonics: "!",
+ISO names: "Exclamation Mark",
+Synonyms: "Bang", "Excl", "Wow", "Factorial", "Shriek", "Pling", "Smash",
+               "Cuss",
+%%
+Mnemonics: "\"",
+ISO names: "Quotation Mark",
+Synonyms:  "Double Quote", "Quote", "String Quote",
+		"Dirk", "Literal Mark", "Double Glitch",
+XML name: "&quot;",
+Comment:   "# See ' and ` for matching names.",
+%%
+Mnemonics: "#",
+ISO names: "Number Sign",
+Synonyms: "Pound", "Number", "Sharp", "Crunch", "Mesh",
+	 	"Hex", "Hash", "Flash", "Grid", "Octothorpe",
+%%
+Mnemonics: "$",
+ISO names: "Currency Sign",
+Synonyms:   "Dollar", "Buck", "Cash", "Ding",
+%%
+Mnemonics: "%",
+ISO names: "Percent Sign",
+Synonyms: "Mod", "Modulo",
+%%
+Mnemonics: "&",
+ISO names: "Ampersand",
+Synonyms: "Amper", "And", 
+XML name:  "&amp;",
+%%
+Mnemonics: "'",
+ISO names: "Apostrophe",
+Synonyms: "Single Quote", "Close Quote", "Prime",
+	"Tick", "Pop", "Spark", "Glitch",
+XML name: "&apos;",
+Comment: "# See ` and \" for matching names.",
+%%
+Mnemonics: "(",
+ISO names: "Left Parenthesis",
+Synonyms:  "Open", "Open Paren", "Left Paren", "Wax", "Sad",
+Comment: "# See ) for matching names.",
+%%
+Mnemonics: ")",
+ISO names: "Right Parenthesis",
+Synonyms: "Close", "Close Paren", "Right Paren", "Wane", "Happy",
+Comment: "# See ( for matching names.",
+%%
+Mnemonics: "*",
+ISO names: "Asterisk",
+Synonyms: "Star", "Splat", "Aster", "Times", "Gear",
+	"Dingle", "Bug", "Twinkle", "Glob" ,
+
+%%
+Mnemonics: "+",
+ISO names: "Plus Sign",
+Synonyms: "Add", "Cross",
+%%
+Mnemonics: ",",
+ISO names: "Comma",
+Synonyms: "Tail",
+%%
+Mnemonics: "-",
+ISO names: "Hyphen",
+Synonyms: "Dash", "Minus", "Worm",
+%%
+Mnemonics: ".",
+ISO names: "Full Stop",
+Synonyms: "Dot", "Decimal Point", "Radix Point", "Point", "Period", "Spot",
+%%
+Mnemonics: "/",
+ISO names: "Solidus",
+Synonyms: "Slash", "Stroke", "Slant", "Diagonal", "Virgule", "Over", "Slat",
+Comment:  "# See \\ for matching names.",
+%%
+Mnemonics: "0",
+ISO names: "Digit Zero",
+%%
+Mnemonics: "1",
+ISO names: "Digit One",
+%%
+Mnemonics: "2",
+ISO names: "Digit Two",
+%%
+Mnemonics: "3",
+ISO names: "Digit Three",
+%%
+Mnemonics: "4",
+ISO names: "Digit Four",
+%%
+Mnemonics: "5",
+ISO names: "Digit Five",
+%%
+Mnemonics: "6",
+ISO names: "Digit Six",
+%%
+Mnemonics: "7",
+ISO names: "Digit Seven",
+%%
+Mnemonics: "8",
+ISO names: "Digit Eight",
+%%
+Mnemonics: "9",
+ISO names: "Digit Nine",
+%%
+Mnemonics: ":",
+ISO names: "Colon",
+Synonyms: "Double-Dot",
+%%
+Mnemonics: ";",
+ISO names: "Semicolon",
+Synonyms: "Semi", "Go-on",
+%%
+Mnemonics: "<",
+ISO names: "Less-than Sign",
+Synonyms:  "Left Angle Bracket", "Read From", "In",
+	"From", "Comesfrom", "Left Funnel", "Left Broket", "Crunch",
+	"Suck", 
+XML name:  "&lt;",
+Comment:   "# See > for matching names.",
+%%
+Mnemonics: "=",
+ISO names: "Equals Sign",
+Synonyms:  "Quadrathorp", "Gets", "Becomes", "Half-Mesh",
+%%
+Mnemonics: ">",
+ISO names: "Greater-than sign",
+Synonyms: "Right Angle Bracket",  "Write To", "Into", "Toward",
+	"Out", "To", "Gozinta", "Right Funnel",
+	"Right Broket", "Zap", "Blow", 
+XML name:  "&gt;",
+Comments: "# See < for matching names.",
+%%
+Mnemonics: "?",
+ISO names: "Question Mark",
+Comments:  "Whatmark", "What", "Ques",
+%%
+Mnemonics: "@",
+ISO names: "Commercial At",
+Synonyms: "At", "Each", "Vortex", "Whorl", "Whirlpool",
+	"Cyclone", "Snail", "Rose",
+%%
+Mnemonics: "A",
+ISO names: "Majuscule A", "Capital A", "Uppercase A",
+%%
+Mnemonics: "B",
+ISO names: "Majuscule B", "Capital B", "Uppercase B",
+%%
+Mnemonics: "C",
+ISO names: "Majuscule C", "Capital C", "Uppercase C",
+%%
+Mnemonics: "D",
+ISO names: "Majuscule D", "Capital D", "Uppercase D",
+%%
+Mnemonics: "E",
+ISO names: "Majuscule E", "Capital E", "Uppercase E",
+%%
+Mnemonics: "F",
+ISO names: "Majuscule F", "Capital F", "Uppercase F",
+%%
+Mnemonics: "G",
+ISO names: "Majuscule G", "Capital G", "Uppercase G",
+%%
+Mnemonics: "H",
+ISO names: "Majuscule H", "Capital H", "Uppercase H",
+%%
+Mnemonics: "I",
+ISO names: "Majuscule I", "Capital I", "Uppercase I",
+%%
+Mnemonics: "J",
+ISO names: "Majuscule J", "Capital J", "Uppercase J",
+%%
+Mnemonics: "K",
+ISO names: "Majuscule K", "Capital K", "Uppercase K",
+%%
+Mnemonics: "L",
+ISO names: "Majuscule L", "Capital L", "Uppercase L",
+%%
+Mnemonics: "M",
+ISO names: "Majuscule M", "Capital M", "Uppercase M",
+%%
+Mnemonics: "N",
+ISO names: "Majuscule N", "Capital N", "Uppercase N",
+%%
+Mnemonics: "O",
+ISO names: "Majuscule O", "Capital O", "Uppercase O",
+%%
+Mnemonics: "P",
+ISO names: "Majuscule P", "Capital P", "Uppercase P",
+%%
+Mnemonics: "Q",
+ISO names: "Majuscule Q", "Capital Q", "Uppercase Q",
+%%
+Mnemonics: "R",
+ISO names: "Majuscule R", "Capital R", "Uppercase R",
+%%
+Mnemonics: "S",
+ISO names: "Majuscule S", "Capital S", "Uppercase S",
+%%
+Mnemonics: "T",
+ISO names: "Majuscule T", "Capital T", "Uppercase T",
+%%
+Mnemonics: "U",
+ISO names: "Majuscule U", "Capital U", "Uppercase U",
+%%
+Mnemonics: "V",
+ISO names: "Majuscule V", "Capital V", "Uppercase V",
+%%
+Mnemonics: "W",
+ISO names: "Majuscule W", "Capital W", "Uppercase W",
+%%
+Mnemonics: "X",
+ISO names: "Majuscule X", "Capital X", "Uppercase X",
+%%
+Mnemonics: "Y",
+ISO names: "Majuscule Y", "Capital Y", "Uppercase Y",
+%%
+Mnemonics: "Z",
+ISO names: "Majuscule Z", "Capital Z", "Uppercase Z",
+%%
+Mnemonics: "[",
+ISO names: "Left Square Bracket",
+Synonyms:  "Bracket", "Bra", "Square",
+Comments:  "# See ] for matching names.",
+%%
+Mnemonics: "\\",
+ISO names: "Reversed Solidus",
+Synonyms:  "Backslash", "Bash", "Backslant", "Backwhack",
+	"Backslat", "Literal", "Escape",
+Comments:  "# See / for matching names.",
+%%
+Mnemonics: "]",
+ISO names: "Right Square Bracket",
+Synonyms:  "Unbracket", "Ket", "Unsquare",
+Comments:  "# See [ for matching names.",
+%%
+Mnemonics: "^",
+ISO names: "Circumflex Accent",
+Synonyms:  "Circumflex", "Caret", "Uparrow", "Hat",
+	"Control", "Boink", "Chevron", "Hiccup", "Sharkfin", "Fang",
+%%
+Mnemonics: "_",
+ISO names: "Low Line",
+Synonyms: "Underscore", "Underline", "Underbar",
+	"Under", "Score", "Backarrow", "Flatworm",
+Comments: "# Backarrow refers to this character's graphic in 1963 ASCII.",
+%%
+Mnemonics: "`",
+ISO names: "Grave Accent",
+Synonyms: "Grave", "Backquote", "Left Quote",
+	"Open Quote", "Backprime", "Unapostrophe",
+	"Backspark", "Birk", "Blugle", "Back Tick", "Push",
+Comments: "# See ' and \" for matching names.",
+%%
+Mnemonics: "a",
+ISO names: "Miniscule a", "Small a", "Lowercase a",
+%%
+Mnemonics: "b",
+ISO names: "Miniscule b", "Small b", "Lowercase b",
+%%
+Mnemonics: "c",
+ISO names: "Miniscule c", "Small c", "Lowercase c",
+%%
+Mnemonics: "d",
+ISO names: "Miniscule d", "Small d", "Lowercase d",
+%%
+Mnemonics: "e",
+ISO names: "Miniscule e", "Small e", "Lowercase e",
+%%
+Mnemonics: "f",
+ISO names: "Miniscule f", "Small f", "Lowercase f",
+%%
+Mnemonics: "g",
+ISO names: "Miniscule g", "Small g", "Lowercase g",
+%%
+Mnemonics: "h",
+ISO names: "Miniscule h", "Small h", "Lowercase h",
+%%
+Mnemonics: "i",
+ISO names: "Miniscule i", "Small i", "Lowercase i",
+%%
+Mnemonics: "j",
+ISO names: "Miniscule j", "Small j", "Lowercase j",
+%%
+Mnemonics: "k",
+ISO names: "Miniscule k", "Small k", "Lowercase k",
+%%
+Mnemonics: "l",
+ISO names: "Miniscule l", "Small l", "Lowercase l",
+%%
+Mnemonics: "m",
+ISO names: "Miniscule m", "Small m", "Lowercase m",
+%%
+Mnemonics: "n",
+ISO names: "Miniscule n", "Small n", "Lowercase n",
+%%
+Mnemonics: "o",
+ISO names: "Miniscule o", "Small o", "Lowercase o",
+%%
+Mnemonics: "p",
+ISO names: "Miniscule p", "Small p", "Lowercase p",
+%%
+Mnemonics: "q",
+ISO names: "Miniscule q", "Small q", "Lowercase q",
+%%
+Mnemonics: "r",
+ISO names: "Miniscule r", "Small r", "Lowercase r",
+%%
+Mnemonics: "s",
+ISO names: "Miniscule s", "Small s", "Lowercase s",
+%%
+Mnemonics: "t",
+ISO names: "Miniscule t", "Small t", "Lowercase t",
+%%
+Mnemonics: "u",
+ISO names: "Miniscule u", "Small u", "Lowercase u",
+%%
+Mnemonics: "v",
+ISO names: "Miniscule v", "Small v", "Lowercase v",
+%%
+Mnemonics: "w",
+ISO names: "Miniscule w", "Small w", "Lowercase w",
+%%
+Mnemonics: "x",
+ISO names: "Miniscule x", "Small x", "Lowercase x",
+%%
+Mnemonics: "y",
+ISO names: "Miniscule y", "Small y", "Lowercase y",
+%%
+Mnemonics: "z",
+ISO names: "Miniscule z", "Small z", "Lowercase z",
+%%
+Mnemonics: "{",
+ISO names: "Left Curly Bracket",
+Synonyms: "Left Brace", "Brace", "Open Brace", "Curly", "Leftit", "Embrace",
+Comments: "# See } for matching names.",
+%%
+Mnemonics: "|",
+ISO names: "Vertical Line",
+Synonyms: "Pipe", "Bar", "Or", "V-Bar", "Spike", "Gozinta", "Thru",
+%%
+Mnemonics: "}",
+ISO names: "Right Curly Bracket",
+Synonyms: "Right Brace", "Unbrace", "Close Brace",
+	"Uncurly", "Rytit", "Bracelet",
+Comments: "# See { for matching names.",
+%%
+Mnemonics: "~",
+ISO names: "Overline",
+Synonyms: "Tilde", "Swung Dash", "Squiggle", "Approx",
+	"Wiggle", "Twiddle", "Enyay",
+%%
+Mnemonics: "DEL",
+ISO names: "Delete",

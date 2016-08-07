@@ -8,6 +8,8 @@ use std::char;
 
 use byteorder::{ByteOrder, BigEndian};
 
+mod ascii;
+
 struct Describable {
     c: char,
 }
@@ -18,12 +20,33 @@ impl fmt::Display for Describable {
         try!(cp.fmt(f));
         let printable : Printable = self.c.into();
         try!(write!(f, "\n{}", printable));
-        match unicode_names::name(self.c) {
-            Some(n) => {
-                write!(f, "\nUnicode name: {}\n", n)
-            },
-            None => write!(f, "\n")
+        let unicode_name = unicode_names::name(self.c);
+        if let Some(n) = unicode_name.clone() {
+            try!(write!(f, "\nUnicode name: {}\n", n));
         }
+        if let Some(ascii) = ascii::additional_names(self.c) {
+            let mut synonyms = vec!();
+            let mut xmls: Option<&str> = None;
+            for syn in ascii.synonyms {
+                if let Some(unicode) = unicode_name.clone() {
+                    if syn.starts_with('&') && syn.ends_with(';') {
+                        xmls = Some(syn);
+                    } else if format!("{}", unicode).as_str().to_lowercase() != *syn.to_lowercase() {
+                        synonyms.push(syn.clone());
+                    }
+                }
+            }
+            if synonyms.len() > 0 {
+                try!(write!(f, "Also known as: {}", synonyms.join(", ")));
+            }
+            if let Some(xml) = xmls {
+                try!(write!(f, "\nEscapes in XML as: {}", xml));
+            }
+            if let Some(n) = ascii.note {
+                try!(write!(f, "\nNote: {}", n));
+            }
+        }
+        Ok(())
     }
 }
 
@@ -102,8 +125,8 @@ impl fmt::Display for Codepoint {
         match self {
             &Codepoint::ASCII7bit(c) => {
                 let num = c as u32;
-                write!(f, "ASCII  {:02x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
-                       num, num, num, num, num)
+                write!(f, "ASCII {:1x}/{:1x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
+                       (num & 0xf0) >> 4, num & 0x0f, num, num, num, num)
             }
             &Codepoint::Latin1(c) => {
                 let num = c as u32;
@@ -198,6 +221,11 @@ fn from_arg(spec: &str) -> Vec<Describable> {
         let _ = u32::from_str_radix(spec, base.clone()).ok().
             map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
+
+    if let Some(ch) = ascii::lookup_by_name(spec) {
+        chars.push(ch);
+    }
+
     chars.sort_by(|a, b| b.cmp(a));
     chars.dedup();
     chars.iter().map(|c| c.clone().into()).collect()
