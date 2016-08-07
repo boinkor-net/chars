@@ -4,7 +4,7 @@ mod names;
 ///table and return any one that matches.
 pub fn lookup_by_name(name: &str) -> Option<char> {
     for &(ch_name, ch) in names::NAMES {
-        if name.to_lowercase() == ch_name {
+        if name.to_lowercase() == ch_name.to_lowercase() {
             return Some(ch);
         }
     }
