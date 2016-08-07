@@ -9,7 +9,7 @@ pub struct Information {
 }
 
 
-pub static PRINTABLE_CHARS: &'static [Information; 127] = &[
+pub static PRINTABLE_CHARS: &'static [Information; 128] = &[
     Information{value:'\u{0}', mnemonics:&["NUL"], synonyms:&["Null", "\\\\0"], note:None},
     Information{value:'\u{1}', mnemonics:&["SOH"], synonyms:&["Start Of Header"], note:None},
     Information{value:'\u{2}', mnemonics:&["STX"], synonyms:&["Start of Text"], note:None},
@@ -137,6 +137,7 @@ pub static PRINTABLE_CHARS: &'static [Information; 127] = &[
     Information{value:'|', mnemonics:&["|"], synonyms:&["Vertical Line", "Pipe", "Bar", "Or", "V-Bar", "Spike", "Gozinta", "Thru"], note:None},
     Information{value:'}', mnemonics:&["}"], synonyms:&["Right Curly Bracket", "Right Brace", "Unbrace", "Close Brace", "Uncurly", "Rytit", "Bracelet"], note:Some("See { for matching names.")},
     Information{value:'~', mnemonics:&["~"], synonyms:&["Overline", "Tilde", "Swung Dash", "Squiggle", "Approx", "Wiggle", "Twiddle", "Enyay"], note:None},
+    Information{value:'\u{7f}', mnemonics:&["DEL"], synonyms:&["Delete"], note:None},
 ];
 
 
@@ -268,4 +269,5 @@ pub static NAMES: &'static [(&'static str, char)] = &[
     ("vertical line", '|'),("pipe", '|'),("bar", '|'),("or", '|'),("v-bar", '|'),("spike", '|'),("gozinta", '|'),("thru", '|'),
     ("right curly bracket", '}'),("right brace", '}'),("unbrace", '}'),("close brace", '}'),("uncurly", '}'),("rytit", '}'),("bracelet", '}'),
     ("overline", '~'),("tilde", '~'),("swung dash", '~'),("squiggle", '~'),("approx", '~'),("wiggle", '~'),("twiddle", '~'),("enyay", '~'),
+    ("DEL", '\u{7f}'),("delete", '\u{7f}'),
 ];

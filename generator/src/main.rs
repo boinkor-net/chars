@@ -120,6 +120,7 @@ fn process_ascii_nametable(input: File) -> Result<Vec<ASCIIEntry>, std::io::Erro
             }
         }
     }
+    entries.push(entry);
     Ok(entries)
 }
 
