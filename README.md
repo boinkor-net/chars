@@ -82,3 +82,15 @@ Control character; quotes as \u{2}
 Called: STX
 Also known as: Start of Text
 ```
+
+Look a control character:
+
+`chars "^C"`
+
+Screenshot:
+```
+ASCII 0/3,   3, 0x03, 0003, bits 00000011
+Control character; quotes as \u{3}, called ^C
+Called: ETX
+Also known as: End of Text
+```
