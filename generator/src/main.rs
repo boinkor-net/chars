@@ -138,7 +138,7 @@ impl<'a> fmt::Display for ASCIIForReading<'a> {
         let val = self.val.clone();
         for mnemo in val.mnemonics {
             if mnemo.len() != 1 {
-                try!(write!(f, "({:?}, {:?}),", mnemo, val.value));
+                try!(write!(f, "({:?}, {:?}),", mnemo.to_lowercase(), val.value));
             }
         }
         for syn in val.synonyms {
