@@ -180,11 +180,4 @@ pub fn write_ascii_name_data(nametable: &Path, output: &Path, sorted_names: &mut
         write!(&mut out, "    {}\n", entry.for_display()).unwrap();
     }
     write!(&mut out, "];\n\n\n").unwrap();
-
-    write!(&mut out, "pub static NAMES: &'static [(&'static str, char)] = &[\n").unwrap();
-    for entry in table.clone() {
-        write!(&mut out, "    {}\n", entry.for_reading()).unwrap();
-
-    }
-    write!(&mut out, "];\n").unwrap();
 }

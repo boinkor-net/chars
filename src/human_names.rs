@@ -1,7 +1,5 @@
 use std::char;
 
-use ascii;
-use unicode_names;
 use super::unicode;
 
 
@@ -41,11 +39,6 @@ pub fn from_arg(spec: &str) -> Vec<char> {
     // Match characters from all our name tables:
     if try_names {
         chars.append(unicode::lookup_by_query(spec).as_mut());
-    }
-
-    // Match characters by ascii(1) name / alias:
-    if let Some(ch) = ascii::lookup_by_name(spec) {
-        chars.push(ch);
     }
 
     chars.sort_by(|a, b| b.cmp(a));
