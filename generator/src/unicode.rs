@@ -1,12 +1,14 @@
 use std::char;
+use std::collections::BTreeMap;
 use std::num::ParseIntError;
 use std::path::Path;
 use std::fs::File;
 use std::io;
 use std::io::{BufReader,BufRead,BufWriter,Write};
-use std::iter::FromIterator;
 
-use std::collections::{BTreeSet, BTreeMap};
+#[cfg(test)] use std::iter::FromIterator;
+#[cfg(test)]use std::collections::BTreeSet;
+
 
 use fst_generator;
 use fst;

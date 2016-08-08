@@ -44,9 +44,6 @@ struct ASCIIEntry {
 #[derive(Debug)]
 struct ASCIIForDisplay<'a> { val: &'a ASCIIEntry }
 
-#[derive(Debug)]
-struct  ASCIIForReading<'a> { val: &'a ASCIIEntry }
-
 impl ASCIIEntry {
     fn new(code: u8) -> ASCIIEntry {
         ASCIIEntry{
@@ -59,10 +56,6 @@ impl ASCIIEntry {
 
     fn for_display(&self) -> ASCIIForDisplay {
         ASCIIForDisplay {val: self }
-    }
-
-    fn for_reading(&self) -> ASCIIForReading {
-        ASCIIForReading {val: self }
     }
 }
 
@@ -125,30 +118,6 @@ impl<'a> fmt::Display for ASCIIForDisplay<'a> {
         let val = self.val.clone();
         try!(write!(f, "Information{{value:{:?}, mnemonics:&{:?}, synonyms:&{:?}, note:{:?}}},",
                     val.value, val.mnemonics, val.synonyms, val.note));
-        Ok(())
-    }
-}
-
-impl<'a> fmt::Display for ASCIIForReading<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        let val = self.val.clone();
-        for mnemo in val.mnemonics {
-            if mnemo.len() != 1 {
-                try!(write!(f, "({:?}, {:?}),", mnemo.to_lowercase(), val.value));
-            }
-        }
-        for syn in val.synonyms {
-            try!(write!(f, "({:?}, {:?}),", syn.to_lowercase(), val.value));
-            // Allow searching for "equals" in addition to "equals sign":
-            if syn.to_lowercase().ends_with("sign") {
-                try!(write!(f, "({:?}, {:?}),", syn[0..syn.len()-5].to_lowercase(), val.value));
-            }
-
-            // Allow searching for "seven" in addition to "digit seven":
-            if syn.to_lowercase().starts_with("digit") {
-                try!(write!(f, "({:?}, {:?}),", syn[6..syn.len()].to_lowercase(), val.value));
-            }
-        }
         Ok(())
     }
 }
