@@ -1,4 +1,5 @@
 # Cha(rs)
+[![Build Status](https://travis-ci.org/antifuchs/chars.svg?branch=master)](https://travis-ci.org/antifuchs/chars)
 
 Use this tool to display names and codes for various ASCII (and
 unicode) characters / code points!
