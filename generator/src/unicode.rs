@@ -7,7 +7,7 @@ use std::io;
 use std::io::{BufReader,BufRead,BufWriter,Write};
 
 #[cfg(test)] use std::iter::FromIterator;
-#[cfg(test)]use std::collections::BTreeSet;
+#[cfg(test)] use std::collections::BTreeSet;
 
 
 use fst_generator;
