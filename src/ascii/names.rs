@@ -1,4 +1,4 @@
-/// Generated with ["target/debug/generator", "../data/ascii/nametable"]
+/// Generated with `make names`
 
 #[derive(Clone)]
 pub struct Information {

@@ -7,5 +7,5 @@ authors = ["Andreas Fuchs <asf@boinkor.net>"]
 getopts = "0"
 regex = "0.1"
 lazy_static = "0.2.1"
-combine = "2.0.0-beta"
-combine-language = "2.0.0-beta"
+fst = "0.1"
+quick-error = "1.1.0"
