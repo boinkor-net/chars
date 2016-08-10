@@ -12,3 +12,5 @@ exclude = [
 unicode_names = { git = 'https://github.com/antifuchs/unicode_names', branch = 'fix-for-rust-1-10' }
 unicode-width = "0.1.3"
 byteorder = "0.5.3"
+lazy_static = "0.2.1"
+fst = "0.1"

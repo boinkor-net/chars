@@ -1,7 +1,6 @@
 use std::char;
 
-use ascii;
-use unicode_names;
+use super::unicode;
 
 
 /// Takes a stringly description of a character (the character itself,
@@ -10,15 +9,13 @@ use unicode_names;
 /// the vector are sorted by descending numeric code point.
 pub fn from_arg(spec: &str) -> Vec<char> {
     let mut chars: Vec<char> = Vec::new();
+    let mut try_names = true;
 
     // match the character itself, or any of its names:
     if spec.chars().count() == 1 {
         spec.chars().next().map(|c| chars.push(c));
-    } else {
-        unicode_names::character(spec).map(|c| chars.push(c));
-    }
-    // Match hex/U+ strings specifically:
-    if spec.starts_with("0x") || spec.starts_with("U+") {
+        try_names = false;
+    } else if spec.starts_with("0x") || spec.starts_with("U+") {
         let _ = u32::from_str_radix(&spec[2..], 16).ok().
             map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
@@ -36,11 +33,12 @@ pub fn from_arg(spec: &str) -> Vec<char> {
             0x3f => chars.push(0x7f as char), // ^? is DEL
             _ => chars.push((spec.as_bytes()[1] & 0x1f) as char)
         }
+        try_names = false;
     }
 
-    // Match characters by ascii(1) name / alias:
-    if let Some(ch) = ascii::lookup_by_name(spec) {
-        chars.push(ch);
+    // Match characters from all our name tables:
+    if try_names {
+        chars.append(unicode::lookup_by_query(spec).as_mut());
     }
 
     chars.sort_by(|a, b| b.cmp(a));

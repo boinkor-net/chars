@@ -1,0 +1,59 @@
+use std::char;
+use std::collections::BTreeSet;
+use std::iter::FromIterator;
+
+use fst::Map;
+
+mod names;
+
+const BYTES: &'static [u8] = include_bytes!("name_fst.bin");
+
+fn query_fst(word: &str) -> Vec<char> {
+    lazy_static! {
+        static ref FST: Map = Map::from_bytes(BYTES.to_owned()).unwrap();
+    }
+
+    let mut chars: Vec<char> = vec!();
+    if let Some(cp) = FST.get(word) {
+        if cp & (0xff<<32) != 0 {
+            let index: usize = (cp as u32) as usize;
+            for ch in names::AMBIGUOUS_CHARS[index] {
+                chars.push(*ch);
+            }
+        } else {
+            char::from_u32(cp as u32).map(|ch| chars.push(ch));
+        }
+    }
+    chars
+}
+
+pub fn lookup_by_query(query: &str) -> Vec<char> {
+    let query = query.to_lowercase();
+    // try the original query first:
+    let original_results = query_fst(query.as_str());
+    if original_results.len() > 0 {
+        return original_results;
+    }
+
+    let mut candidates = BTreeSet::new();
+    if query.contains(|c: char| c.is_whitespace()) {
+        // Split multiple-word queries, AND them together:
+        let mut words = query.split_whitespace();
+        if let Some(word) = words.next() {
+            for ch in query_fst(word) {
+                candidates.insert(ch);
+            }
+        }
+        for word in words {
+            let mut merge_candidates = BTreeSet::new();
+            for ch in query_fst(word) {
+                merge_candidates.insert(ch);
+            }
+            candidates = BTreeSet::from_iter(candidates.intersection(&merge_candidates).map(|c| *c));
+            if candidates.len() == 0 {
+                return vec!();
+            }
+        }
+    }
+    candidates.iter().map(|c| *c).collect()
+}
