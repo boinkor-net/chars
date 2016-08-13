@@ -3,7 +3,7 @@ all: src/ascii/names.rs
 
 names: src/ascii/names.rs src/unicode/name_fst.bin
 
-src/ascii/names.rs: generator/src/main.rs generator/Cargo.lock generator/Cargo.toml data/ascii/nametable
+src/ascii/names.rs: generator/src/main.rs generator/src/ascii.rs generator/Cargo.lock generator/Cargo.toml data/ascii/nametable
 	cd generator && cargo run -- ../data ../src
 
 src/unicode/name_fst.bin: generator/src/unicode.rs generator/src/fst_generator.rs data/unicode/NameAliases.txt data/unicode/UnicodeData.txt
