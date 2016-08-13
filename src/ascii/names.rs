@@ -52,7 +52,7 @@ pub static PRINTABLE_CHARS: &'static [Information; 128] = &[
     Information{value:'\'', mnemonics:&["\'"], synonyms:&["Apostrophe", "Single Quote", "Close Quote", "Prime", "Tick", "Pop", "Spark", "Glitch", "&apos;"], note:Some("See ` and \\\" for matching names.")},
     Information{value:'(', mnemonics:&["("], synonyms:&["Left Parenthesis", "Open", "Open Paren", "Left Paren", "Wax", "Sad"], note:Some("See ) for matching names.")},
     Information{value:')', mnemonics:&[")"], synonyms:&["Right Parenthesis", "Close", "Close Paren", "Right Paren", "Wane", "Happy"], note:Some("See ( for matching names.")},
-    Information{value:'*', mnemonics:&["*"], synonyms:&["Asterisk", "Star", "Splat", "Aster", "Times", "Gear", "Dingle", "Bug", "Twinkle", "Glob\" ,"], note:None},
+    Information{value:'*', mnemonics:&["*"], synonyms:&["Asterisk", "Star", "Splat", "Aster", "Times", "Gear", "Dingle", "Bug", "Twinkle", "Glob"], note:None},
     Information{value:'+', mnemonics:&["+"], synonyms:&["Plus Sign", "Add", "Cross"], note:None},
     Information{value:',', mnemonics:&[","], synonyms:&["Comma", "Tail"], note:None},
     Information{value:'-', mnemonics:&["-"], synonyms:&["Hyphen", "Dash", "Minus", "Worm"], note:None},

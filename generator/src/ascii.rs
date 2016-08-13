@@ -62,7 +62,7 @@ impl ASCIIEntry {
 fn split_name_line(line: &str) -> Vec<String> {
     lazy_static! {
         static ref QUOTES: Regex = Regex::new("\",\\s*\"").unwrap();
-        static ref RIGHT_QUOTE: Regex = Regex::new("\",\\s*$").unwrap();
+        static ref RIGHT_QUOTE: Regex = Regex::new("\"\\s*,\\s*$").unwrap();
         static ref LEFT_QUOTE: Regex = Regex::new("^\"").unwrap();
     }
     let line = line.trim_left();
