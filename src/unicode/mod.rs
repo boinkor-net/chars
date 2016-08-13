@@ -17,8 +17,8 @@ fn query_fst(word: &str) -> Vec<char> {
     if let Some(cp) = FST.get(word) {
         if cp & (0xff<<32) != 0 {
             let index: usize = (cp as u32) as usize;
-            for ch in names::AMBIGUOUS_CHARS[index] {
-                chars.push(*ch);
+            for ch in names::AMBIGUOUS_CHARS[index].chars() {
+                chars.push(ch);
             }
         } else {
             char::from_u32(cp as u32).map(|ch| chars.push(ch));

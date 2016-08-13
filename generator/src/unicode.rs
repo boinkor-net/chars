@@ -106,20 +106,20 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
     let mut map_builder = try!(MapBuilder::new(out));
 
     let mut counter: u64 = 0;
-    let mut results: BTreeMap<Vec<&char>, u64> = BTreeMap::new();
+    let mut results: BTreeMap<String, u64> = BTreeMap::new();
 
     for (name, chs) in names.iter() {
         if chs.len() > 1 {
-            let key: Vec<&char> = chs.iter().collect();
+            let mut key = String::new();
+            for c in chs { key.push(*c) }
 
-            let num: u64 = if results.contains_key(&key) {
+            let num: u64 = (0xff << 32) | if results.contains_key(&key) {
                 *results.get(&key).unwrap()
             } else {
-                counter += 1;
                 results.insert(key, counter);
-                counter
+                counter += 1;
+                counter - 1
             };
-            let num: u64 = num | (0xff << 32);
             try!(map_builder.insert(name, num));
         } else {
             try!(map_builder.insert(name, *chs.iter().next().unwrap() as u64));
@@ -130,14 +130,14 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
     // Now generate the multi-results file:
     let multi_result_filename = output.join("names.rs");
     let mut rust_out = BufWriter::new(try!(File::create(multi_result_filename)));
-    let mut ambiguous_chars: Vec<Vec<&char>> = vec![Vec::new(); counter as usize + 1];
+    let mut ambiguous_chars: Vec<String> = vec!(String::new(); counter as usize);
     for (chars, i) in results {
         ambiguous_chars[i as usize] = chars;
     }
     try!(write!(&mut rust_out, "/// Generated with `make names`\n"));
-    try!(write!(&mut rust_out, "pub static AMBIGUOUS_CHARS: &'static [&'static [char]] = &[\n"));
+    try!(write!(&mut rust_out, "pub static AMBIGUOUS_CHARS: &'static [&'static str; {}] = &[\n", ambiguous_chars.len()));
     for chars in ambiguous_chars {
-        try!(write!(&mut rust_out, "    &{:?},\n", chars.as_slice()));
+        try!(write!(&mut rust_out, "    {:?},\n", chars));
     }
     try!(write!(&mut rust_out, "];\n"));
 
