@@ -3,7 +3,7 @@ use std::collections::btree_map;
 use std::iter::FromIterator;
 
 fn build_stopwords() -> BTreeSet<&'static str> {
-    BTreeSet::from_iter(vec!["with", "sign", "small", "letter", "digit", "for", "symbol", "<control>"].iter().map(|s| *s))
+    BTreeSet::from_iter(vec!["with", "sign", "small", "letter", "digit", "for", "symbol", "<control>"].into_iter())
 }
 
 #[test]
@@ -35,10 +35,10 @@ fn name_components(name: &str) -> Vec<String> {
 fn test_name_components() {
     assert_eq!(name_components("D WITH CURL, LATIN SMALL LETTER"),
                Vec::from_iter(vec!["d with curl, latin small letter", "curl", "latin"]
-                              .iter().map(|s| String::from(*s))));
+                              .into_iter().map(|s| String::from(s))));
     assert_eq!(name_components("Equals Sign"),
                Vec::from_iter(vec!["equals sign", "equals"]
-                              .iter().map(|s| String::from(*s))));
+                              .into_iter().map(|s| String::from(s))));
 
 }
 
