@@ -62,6 +62,7 @@ fn from_arg_translates_descriptions() {
 fn from_arg_translates_numbers() {
     let received = from_arg("60");
     let mut iter = received.iter();
+    assert_eq!('\u{e012b}', *iter.next().unwrap());
     assert_eq!('`', *iter.next().unwrap());
     assert_eq!('<', *iter.next().unwrap());
     assert_eq!('0', *iter.next().unwrap());
