@@ -5,6 +5,7 @@ use std::convert;
 
 use byteorder::{ByteOrder, BigEndian};
 use unicode_names;
+use unicode_width::UnicodeWidthChar;
 
 use super::ascii;
 
@@ -87,11 +88,19 @@ impl fmt::Display for Printable {
         if self.c.is_control() {
             try!(write!(f, "Control character; quotes as {}, called ^{}\n", quote, control_char(self.c)));
         } else {
-            if ! self.c.is_whitespace() {
-                try!(write!(f, "Prints as {}", self.c));
-            } else {
-                try!(write!(f, "Prints as `{}'", self.c));
+            if let (Some(width), Some(cjk_width)) = (self.c.width(), self.c.width_cjk()) {
+                if width == cjk_width {
+                    try!(write!(f, "Width: {}, ", width));
+                } else {
+                    try!(write!(f, "Width: {} ({} in CJK context), ", width, cjk_width));
+                }
             }
+            if ! self.c.is_whitespace() {
+                try!(write!(f, "prints as {}", self.c));
+            } else {
+                try!(write!(f, "prints as `{}'", self.c));
+            }
+
             // Check if we can up/downcase:
             let mut caseflipped = String::new();
             if self.c.is_uppercase() {

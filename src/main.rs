@@ -1,4 +1,5 @@
 extern crate unicode_names;
+extern crate unicode_width;
 extern crate byteorder;
 extern crate fst;
 #[macro_use] extern crate lazy_static;
