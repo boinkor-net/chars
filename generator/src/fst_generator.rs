@@ -12,21 +12,29 @@ fn test_stopwords() {
     assert!(sw.contains("with"));
 }
 
-
-fn name_components(name: &str) -> Vec<String> {
+fn add_component(result: &mut Vec<String>, component: &str) {
     lazy_static! {
         static ref STOPS: BTreeSet<&'static str> = build_stopwords();
     }
+    let component = component.to_lowercase();
+    let component = component.trim_right_matches(',');
+
+    if STOPS.contains(component) || component.len() == 1 {
+        return;
+    }
+    result.push(component.to_owned());
+
+    if !component.contains('-') { return }
+    for parts in component.split('-') {
+        add_component(result, parts);
+    }
+}
+
+fn name_components(name: &str) -> Vec<String> {
     let mut result = vec!();
     result.push(name.to_lowercase().to_owned());
     for component in name.split_whitespace() {
-        let component = component.to_lowercase();
-        let component = component.trim_right_matches(',');
-
-        if STOPS.contains(component) || component.len() == 1 {
-            continue;
-        }
-        result.push(component.to_owned());
+        add_component(&mut result, component);
     }
     result
 }
@@ -39,7 +47,9 @@ fn test_name_components() {
     assert_eq!(name_components("Equals Sign"),
                Vec::from_iter(vec!["equals sign", "equals"]
                               .into_iter().map(|s| String::from(s))));
-
+    assert_eq!(name_components("UPSIDE-DOWN FACE"),
+               Vec::from_iter(vec!["upside-down face", "upside-down", "upside", "down", "face"]
+                              .into_iter().map(|s| String::from(s))));
 }
 
 #[derive(Clone, Debug, PartialEq)]
