@@ -24,7 +24,7 @@ should work, but no guarantees.
 
 ### Plain crate installation without source code
 
-`cargo install --git https://github.com/antifuchs/chars.git`
+`cargo install chars --git https://github.com/antifuchs/chars.git`
 
 ### Source installation
 1. Clone this repo
