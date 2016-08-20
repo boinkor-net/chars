@@ -12,4 +12,8 @@ src/unicode/name_fst.bin: generator/src/unicode.rs generator/src/fst_generator.r
 install: names
 	cargo install --force
 
+test: names
+	cd generator ; cargo test
+	cargo test
+
 .PHONY: all names install
