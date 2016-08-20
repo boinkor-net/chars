@@ -10,7 +10,7 @@ use unicode_width::UnicodeWidthChar;
 use super::ascii;
 
 pub fn describe(c: char) {
-    println!("{}", Describable::from(c));
+    println!("{}\n", Describable::from(c));
 }
 
 struct Describable {
@@ -25,7 +25,7 @@ impl fmt::Display for Describable {
         try!(write!(f, "\n{}", printable));
         let unicode_name = unicode_names::name(self.c);
         if let Some(n) = unicode_name.clone() {
-            try!(write!(f, "\nUnicode name: {}\n", n));
+            try!(write!(f, "\nUnicode name: {}", n));
         }
         if let Some(ascii) = ascii::additional_names(self.c) {
             let mut synonyms = vec!();
@@ -43,16 +43,16 @@ impl fmt::Display for Describable {
                 }
             }
             if mnemos.len() > 0 {
-                try!(write!(f, "Called: {}\n", mnemos.join(", ")));
+                try!(write!(f, "Called: {}", mnemos.join(", ")));
             }
             if synonyms.len() > 0 {
-                try!(write!(f, "Also known as: {}\n", synonyms.join(", ")));
+                try!(write!(f, "Also known as: {}", synonyms.join(", ")));
             }
             if let Some(xml) = xmls {
-                try!(write!(f, "Escapes in XML as: {}\n", xml));
+                try!(write!(f, "Escapes in XML as: {}", xml));
             }
             if let Some(n) = ascii.note {
-                try!(write!(f, "Note: {}\n", n));
+                try!(write!(f, "Note: {}", n));
             }
         }
         Ok(())
@@ -86,7 +86,7 @@ impl fmt::Display for Printable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let quote : String = self.c.escape_default().collect();
         if self.c.is_control() {
-            try!(write!(f, "Control character; quotes as {}, called ^{}\n", quote, control_char(self.c)));
+            try!(write!(f, "Control character; quotes as {}, called ^{}", quote, control_char(self.c)));
         } else {
             if let (Some(width), Some(cjk_width)) = (self.c.width(), self.c.width_cjk()) {
                 if width == cjk_width {
