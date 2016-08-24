@@ -134,9 +134,9 @@ enum Codepoint {
 impl convert::From<char> for Codepoint {
     fn from(c: char) -> Codepoint {
         match c as u32 {
-            0 ... 128 => Codepoint::ASCII7bit(c),
-            128 ... 256 => Codepoint::Latin1(c),
-            256 ... 65536 => Codepoint::UnicodeBasic(c),
+            0 ... 127 => Codepoint::ASCII7bit(c),
+            128 ... 255 => Codepoint::Latin1(c),
+            256 ... 65535 => Codepoint::UnicodeBasic(c),
             _ => Codepoint::UnicodeWide(c),
         }
     }
