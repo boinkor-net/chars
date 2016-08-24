@@ -2,6 +2,7 @@ use std::char;
 
 use super::unicode;
 
+const READ_BASES: &'static [u32] = &[16, 10, 8, 2];
 
 /// Takes a stringly description of a character (the character itself,
 /// or a unicode code point name) and returns a Vec of Describable
@@ -21,13 +22,13 @@ pub fn from_arg(spec: &str) -> Vec<char> {
     }
 
     // Match plain numbers in all bases:
-    for base in vec![16, 10, 8, 2] {
-        let _ = u32::from_str_radix(spec, base.clone()).ok().
+    for base in READ_BASES {
+        let _ = u32::from_str_radix(spec, *base).ok().
             map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
 
     // Match ^-escapes as control characters
-    if spec.len() == 2 && spec.starts_with("^") {
+    if spec.len() == 2 && spec.starts_with('^') {
         let control = spec.as_bytes()[1];
         match control {
             0x3f => chars.push(0x7f as char), // ^? is DEL
