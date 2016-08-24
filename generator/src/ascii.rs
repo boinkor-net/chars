@@ -64,10 +64,18 @@ fn split_name_line(line: &str) -> Vec<String> {
         static ref QUOTES: Regex = Regex::new("\",\\s*\"").unwrap();
         static ref RIGHT_QUOTE: Regex = Regex::new("\"\\s*,\\s*$").unwrap();
         static ref LEFT_QUOTE: Regex = Regex::new("^\"").unwrap();
+        static ref BACKSLASH_SOMETHING: Regex = Regex::new(r"\\(.)").unwrap();
     }
     let line = line.trim_left();
     let line = LEFT_QUOTE.replace_all(RIGHT_QUOTE.replace_all(line, "$1").as_str(), "");
-    QUOTES.split(line.as_str()).map(|s| s.to_owned()).collect()
+    QUOTES.split(line.as_str()).map(|s| BACKSLASH_SOMETHING.replace_all(s, "$1").to_owned()).collect()
+}
+
+#[test]
+fn test_split_name_line() {
+    assert_eq!(split_name_line(r#" "Shift In", "Locking Shift 0","#), vec!["Shift In", "Locking Shift 0"]);
+    assert_eq!(split_name_line(r#""\\v","#), vec![r"\v"]);
+    assert_eq!(split_name_line(r#""\"","#), vec![r#"""#]);
 }
 
 fn process_ascii_nametable(input: File) -> Result<Vec<ASCIIEntry>, io::Error> {
