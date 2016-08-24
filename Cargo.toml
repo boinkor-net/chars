@@ -14,3 +14,8 @@ unicode-width = "0.1.3"
 byteorder = "0.5.3"
 lazy_static = "0.2.1"
 fst = "0.1"
+# Only a dependency on nightly rust:
+clippy = {version = "*", optional = true}
+
+[features]
+default = []

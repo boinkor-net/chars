@@ -28,7 +28,7 @@ impl fmt::Display for Describable {
             try!(write!(f, "\nUnicode name: {}", n));
         }
         if let Some(ascii) = ascii::additional_names(self.c) {
-            let mut synonyms = vec!();
+            let mut synonyms: Vec<&str> = vec!();
             let mut xmls: Option<&str> = None;
             let mnemos: Vec<&str> = ascii.mnemonics.iter().filter(|n| n.len() != 1).map(|s| *s).collect();
             for syn in ascii.synonyms {
@@ -36,23 +36,23 @@ impl fmt::Display for Describable {
                     xmls = Some(syn);
                 } else if let Some(unicode) = unicode_name.clone() {
                     if format!("{}", unicode).as_str().to_lowercase() != *syn.to_lowercase() {
-                        synonyms.push(syn.clone());
+                        synonyms.push(syn);
                     }
                 } else {
-                    synonyms.push(syn.clone());
+                    synonyms.push(syn);
                 }
             }
-            if mnemos.len() > 0 {
-                try!(write!(f, "Called: {}", mnemos.join(", ")));
+            if !mnemos.is_empty() {
+                try!(write!(f, "\nCalled: {}", mnemos.join(", ")));
             }
-            if synonyms.len() > 0 {
-                try!(write!(f, "Also known as: {}", synonyms.join(", ")));
+            if !synonyms.is_empty() {
+                try!(write!(f, "\nAlso known as: {}", synonyms.join(", ")));
             }
             if let Some(xml) = xmls {
-                try!(write!(f, "Escapes in XML as: {}", xml));
+                try!(write!(f, "\nEscapes in XML as: {}", xml));
             }
             if let Some(n) = ascii.note {
-                try!(write!(f, "Note: {}", n));
+                try!(write!(f, "\nNote: {}", n));
             }
         }
         Ok(())
@@ -78,7 +78,7 @@ impl convert::From<char> for Printable {
 fn control_char(ch: char) -> char {
     match ch as u8 {
         0x7f => '?',
-        _ => ('@' as u8 + (ch as u8 & 0x1f)) as char
+        _ => (b'@' + (ch as u8 & 0x1f)) as char
     }
 }
 
@@ -134,9 +134,9 @@ enum Codepoint {
 impl convert::From<char> for Codepoint {
     fn from(c: char) -> Codepoint {
         match c as u32 {
-            0 ... 128 => Codepoint::ASCII7bit(c),
-            128 ... 256 => Codepoint::Latin1(c),
-            256 ... 65536 => Codepoint::UnicodeBasic(c),
+            0 ... 127 => Codepoint::ASCII7bit(c),
+            128 ... 255 => Codepoint::Latin1(c),
+            256 ... 65535 => Codepoint::UnicodeBasic(c),
             _ => Codepoint::UnicodeWide(c),
         }
     }
@@ -144,26 +144,26 @@ impl convert::From<char> for Codepoint {
 
 impl fmt::Display for Codepoint {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        match self {
-            &Codepoint::ASCII7bit(c) => {
+        match *self {
+            Codepoint::ASCII7bit(c) => {
                 let num = c as u32;
                 write!(f, "ASCII {:1x}/{:1x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
                        (num & 0xf0) >> 4, num & 0x0f, num, num, num, num)
             }
-            &Codepoint::Latin1(c) => {
+            Codepoint::Latin1(c) => {
                 let num = c as u32;
                 write!(f, "LATIN1 {:02x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
                        num, num, num, num, num)
             }
-            &Codepoint::UnicodeBasic(c) | &Codepoint::UnicodeWide(c) => {
+            Codepoint::UnicodeBasic(c) | Codepoint::UnicodeWide(c) => {
                 let num = c as u32;
                 let mut string = String::new();
                 string.push(c);
                 let s = string.as_str();
                 let utf8 = ByteRepresentation::from(s.bytes());
                 let utf16 = ByteRepresentation::from(s.encode_utf16());
-                let width = match self {
-                    &Codepoint::UnicodeWide(_) => 8,
+                let width = match *self {
+                    Codepoint::UnicodeWide(_) => 8,
                     _ => 4,
                 };
                 write!(f, "U+{:0width$X}, &#{:}; 0x{:0width$X}, \\0{:o}, UTF-8: {}, UTF-16BE: {}",
@@ -201,15 +201,15 @@ impl<'a> convert::From<str::Bytes<'a>> for ByteRepresentation {
 
 impl fmt::Display for ByteRepresentation {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        match self {
-            &ByteRepresentation::UTF8(ref bytes) => {
+        match *self {
+            ByteRepresentation::UTF8(ref bytes) => {
                 let mut byte_iter = bytes.iter();
                 try!(write!(f, "{:02x}", byte_iter.next().unwrap()));
                 for byte in byte_iter {
                     try!(write!(f, " {:02x}", byte));
                 }
             },
-            &ByteRepresentation::UTF16BE(ref bytes) => {
+            ByteRepresentation::UTF16BE(ref bytes) => {
                 for byte in bytes.iter() {
                     try!(write!(f, "{:02x}", byte));
                 }

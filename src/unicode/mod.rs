@@ -31,7 +31,7 @@ pub fn lookup_by_query(query: &str) -> Vec<char> {
     let query = query.to_lowercase();
     // try the original query first:
     let original_results = query_fst(query.as_str());
-    if original_results.len() > 0 {
+    if !original_results.is_empty() {
         return original_results;
     }
 
@@ -49,11 +49,11 @@ pub fn lookup_by_query(query: &str) -> Vec<char> {
             for ch in query_fst(word) {
                 merge_candidates.insert(ch);
             }
-            candidates = BTreeSet::from_iter(candidates.intersection(&merge_candidates).map(|c| *c));
-            if candidates.len() == 0 {
+            candidates = BTreeSet::from_iter(candidates.intersection(&merge_candidates).cloned());
+            if candidates.is_empty() {
                 return vec!();
             }
         }
     }
-    candidates.iter().map(|c| *c).collect()
+    candidates.iter().cloned().collect()
 }

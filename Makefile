@@ -1,3 +1,6 @@
+ADDITIONAL_TRAVISCI_FEATURES ?= ''
+ADDITIONAL_FEATURES := ${ADDITIONAL_TRAVISCI_FEATURES}
+
 all: src/ascii/names.rs
 	cargo build --release
 
@@ -12,8 +15,13 @@ src/unicode/name_fst.bin: generator/src/unicode.rs generator/src/fst_generator.r
 install: names
 	cargo install --force
 
+test_travisci: test
+
 test: names
 	cd generator ; cargo test
-	cargo test
+	cargo test --features ${ADDITIONAL_FEATURES}
+
+test_clippy: names
+	cargo +nightly clippy
 
 .PHONY: all names install
