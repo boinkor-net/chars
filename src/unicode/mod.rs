@@ -55,5 +55,5 @@ pub fn lookup_by_query(query: &str) -> Vec<char> {
             }
         }
     }
-    candidates.iter().cloned().collect()
+    candidates.into_iter().collect()
 }
