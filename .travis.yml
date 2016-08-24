@@ -1,8 +1,19 @@
 language: rust
-rust:
-- 1.10.0
-- beta
-- nightly
 matrix:
+  fast_finish: true
   allow_failures:
     - rust: nightly
+  include:
+    - rust: 1.10.0
+    - rust: stable
+    - rust: beta
+    - rust: nightly
+    - rust: nightly
+      env: ADDITIONAL_TRAVISCI_FEATURES=clippy
+
+install:
+  - (cd generator ; cargo build)
+  - cargo build --features "$ADDITIONAL_FEATURES"
+
+script:
+  - make test_travisci
