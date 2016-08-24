@@ -15,5 +15,8 @@ install: names
 test: names
 	cd generator ; cargo test
 	cargo test
+test_clippy:
+test_clippy: names
+	cargo +nightly clippy
 
 .PHONY: all names install
