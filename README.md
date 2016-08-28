@@ -39,7 +39,7 @@ Look up a character by its face value:
 Screenshot:
 ```
 LATIN1 df, 223, 0xdf, 0337, bits 11011111
-Prints as ß
+Width: 1 (2 in CJK context), prints as ß
 Lower case. Upcases to SS
 Quotes as \u{df}
 Unicode name: LATIN SMALL LETTER SHARP S
@@ -52,7 +52,7 @@ Look up a character by its unicode point:
 Screenshot:
 ```
 U+0001F63C, &#128572; 0x0001F63C, \0373074, UTF-8: f0 9f 98 bc, UTF-16BE: d83dde3c
-Prints as 😼
+Width: 1, prints as 😼
 Quotes as \u{1f63c}
 Unicode name: CAT FACE WITH WRY SMILE
 ```
@@ -63,23 +63,48 @@ Look up a character by ambiguous "char code" handwaving:
 
 Screenshot:
 ```
+U+0001F0EA, &#127210; 0x0001F0EA, \0370352, UTF-8: f0 9f 83 aa, UTF-16BE: d83cdcea
+Width: 1, prints as 🃪
+Quotes as \u{1f0ea}
+Unicode name: PLAYING CARD TRUMP-10
+
+U+0001DAA9, &#121513; 0x0001DAA9, \0355251, UTF-8: f0 9d aa a9, UTF-16BE: d836dea9
+Width: 0, prints as 𝪩
+Quotes as \u{1daa9}
+Unicode name: SIGNWRITING ROTATION MODIFIER-10
+
+U+0001D209, &#119305; 0x0001D209, \0351011, UTF-8: f0 9d 88 89, UTF-16BE: d834de09
+Width: 1, prints as 𝈉
+Quotes as \u{1d209}
+Unicode name: GREEK VOCAL NOTATION SYMBOL-10
+
+U+0001D1A4, &#119204; 0x0001D1A4, \0350644, UTF-8: f0 9d 86 a4, UTF-16BE: d834dda4
+Width: 1, prints as 𝆤
+Quotes as \u{1d1a4}
+Unicode name: MUSICAL SYMBOL ORNAMENT STROKE-10
+
+U+FE09, &#65033; 0xFE09, \0177011, UTF-8: ef b8 89, UTF-16BE: fe09
+Width: 0, prints as ︉
+Quotes as \u{fe09}
+Unicode name: VARIATION SELECTOR-10
+
 ASCII 1/0,  16, 0x10, 0020, bits 00010000
-Control character; quotes as \u{10}
+Control character; quotes as \u{10}, called ^P
 Called: DLE
 Also known as: Data Link Escape
 
 ASCII 0/a,  10, 0x0a, 0012, bits 00001010
-Control character; quotes as \n
+Control character; quotes as \n, called ^J
 Called: LF, NL
-Also known as: Line Feed, Newline, \\n
+Also known as: Line Feed, Newline, \n
 
 ASCII 0/8,   8, 0x08, 0010, bits 00001000
-Control character; quotes as \u{8}
+Control character; quotes as \u{8}, called ^H
 Called: BS
-Also known as: Backspace, \\b
+Also known as: Backspace, \b
 
 ASCII 0/2,   2, 0x02, 0002, bits 00000010
-Control character; quotes as \u{2}
+Control character; quotes as \u{2}, called ^B
 Called: STX
 Also known as: Start of Text
 ```
