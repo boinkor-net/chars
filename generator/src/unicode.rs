@@ -39,57 +39,95 @@ fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<bool, Er
     if line.starts_with("#") || line.trim_left() == "" {
         return Ok(false);
     }
-    let fields: Vec<&str> = line.splitn(3, ";").collect();
+    let fields: Vec<&str> = line.splitn(15, ";").collect();
     let cp = try!(u32::from_str_radix(fields[0], 16));
     if let Some(ch) = char::from_u32(cp) {
         let query = fields[1].to_owned();
         names.insert(vec![query], ch);
+        match fields.get(10) {
+            Some(&"") | None => {}
+            Some(name) => names.insert(vec![name.to_string()], ch),
+        }
     }
     Ok(true)
 }
 
 #[test]
 fn test_processing() {
-    let mut sorted_names = fst_generator::Names::new();
+    {
+        let mut sorted_names = fst_generator::Names::new();
 
-    // Non-data gets skipped:
-    assert!(!process_line(&mut sorted_names, "# this is a comment").unwrap());
-    assert!(!process_line(&mut sorted_names, "").unwrap());
-    assert!(!process_line(&mut sorted_names, "    ").unwrap());
+        // Non-data gets skipped:
+        assert!(!process_line(&mut sorted_names, "# this is a comment").unwrap());
+        assert!(!process_line(&mut sorted_names, "").unwrap());
+        assert!(!process_line(&mut sorted_names, "    ").unwrap());
+    }
+    {
+        let mut sorted_names = fst_generator::Names::new();
+        assert!(process_line(&mut sorted_names, "03BB;GREEK SMALL LETTER LAMDA;Ll;0;L;;;;;N;GREEK SMALL LETTER LAMBDA;;039B;;039B").unwrap());
+        let have = BTreeSet::from_iter(sorted_names.iter().map(|(name, chs)| {
+            let v: Vec<char> = chs.into_iter().map(|ch| ch.to_owned()).collect();
+            (name.as_str(), v)
+        }));
+        let want = BTreeSet::from_iter(vec![
+            // Current unicode spelling:
+            ("greek", vec!['\u{03bb}']), ("greek small letter lamda", vec!['\u{03bb}']), ("lamda", vec!['\u{03bb}']),
+            // Unicode 1.0 spelling:
+            ("greek small letter lambda", vec!['\u{03bb}']), ("lambda", vec!['\u{03bb}'])
+        ]);
+        assert_eq!(have, want);
+    }
 
-    // Some from NameAliases.txt:
-    assert!(process_line(&mut sorted_names, "0091;PRIVATE USE ONE;control").unwrap());
-    assert!(process_line(&mut sorted_names, "0092;PRIVATE USE TWO;control").unwrap());
 
-    assert!(process_line(&mut sorted_names, "0005;ENQUIRY;control").unwrap());
-    assert!(process_line(&mut sorted_names, "200D;ZWJ;abbreviation").unwrap());
+    {
+        let mut sorted_names = fst_generator::Names::new();
+        // Some from NameAliases.txt:
+        assert!(process_line(&mut sorted_names, "0091;PRIVATE USE ONE;control").unwrap());
+        assert!(process_line(&mut sorted_names, "0092;PRIVATE USE TWO;control").unwrap());
 
-    // And some from UnicodeData.txt:
-    assert!(process_line(&mut sorted_names,
-                         "00AE;REGISTERED SIGN;So;0;ON;;;;;N;REGISTERED TRADE MARK SIGN;;;;")
-        .unwrap());
-    assert!(process_line(&mut sorted_names,
-                         "0214;LATIN CAPITAL LETTER U WITH DOUBLE GRAVE;Lu;0;L;0055 \
-                          030F;;;;N;;;;0215;e")
-        .unwrap());
+        assert!(process_line(&mut sorted_names, "0005;ENQUIRY;control").unwrap());
+        assert!(process_line(&mut sorted_names, "200D;ZWJ;abbreviation").unwrap());
 
-    let mut iter = sorted_names.iter();
-    assert_eq!(iter.next(), Some((&"capital".to_owned(), &BTreeSet::from_iter(vec!['\u{0214}']))));
-    assert_eq!(iter.next(), Some((&"double".to_owned(), &BTreeSet::from_iter(vec!['\u{0214}']))));
-    assert_eq!(iter.next(), Some((&"enquiry".to_owned(), &BTreeSet::from_iter(vec!['\u{0005}']))));
-    assert_eq!(iter.next(), Some((&"grave".to_owned(), &BTreeSet::from_iter(vec!['\u{0214}']))));
-    assert_eq!(iter.next(), Some((&"latin".to_owned(), &BTreeSet::from_iter(vec!['\u{0214}']))));
-    assert_eq!(iter.next(), Some((&"latin capital letter u with double grave".to_owned(), &BTreeSet::from_iter(vec!['\u{0214}']))));
-    assert_eq!(iter.next(), Some((&"one".to_owned(), &BTreeSet::from_iter(vec!['\u{91}']))));
-    assert_eq!(iter.next(), Some((&"private".to_owned(), &BTreeSet::from_iter(vec!['\u{91}', '\u{92}']))));
-    assert_eq!(iter.next(), Some((&"private use one".to_owned(), &BTreeSet::from_iter(vec!['\u{91}']))));
-    assert_eq!(iter.next(), Some((&"private use two".to_owned(), &BTreeSet::from_iter(vec!['\u{92}']))));
-    assert_eq!(iter.next(), Some((&"registered".to_owned(), &BTreeSet::from_iter(vec!['\u{AE}']))));
-    assert_eq!(iter.next(), Some((&"registered sign".to_owned(), &BTreeSet::from_iter(vec!['\u{AE}']))));
-    assert_eq!(iter.next(), Some((&"two".to_owned(), &BTreeSet::from_iter(vec!['\u{92}']))));
-    // Skip the "U": it's too short to be meaningful
-    assert_eq!(iter.next(), Some((&"use".to_owned(), &BTreeSet::from_iter(vec!['\u{91}', '\u{92}']))));
-    assert_eq!(iter.next(), Some((&"zwj".to_owned(), &BTreeSet::from_iter(vec!['\u{200D}']))));
+        // And some from UnicodeData.txt:
+        assert!(process_line(&mut sorted_names,
+                             "00AE;REGISTERED SIGN;So;0;ON;;;;;N;REGISTERED TRADE MARK SIGN;;;;")
+                .unwrap());
+        assert!(process_line(&mut sorted_names,
+                             "0214;LATIN CAPITAL LETTER U WITH DOUBLE GRAVE;Lu;0;L;0055 \
+                              030F;;;;N;;;;0215;e")
+                .unwrap());
+
+        let have = BTreeSet::from_iter(sorted_names.iter().map(|(name, chs)| {
+            let v: Vec<char> = chs.into_iter().map(|ch| ch.to_owned()).collect();
+            (name.as_str(), v)
+        }));
+        let want = BTreeSet::from_iter(vec![
+            ("capital", vec!['\u{0214}']),
+            ("double", vec!['\u{0214}']),
+            ("enquiry", vec!['\u{0005}']),
+            ("grave", vec!['\u{0214}']),
+            ("latin", vec!['\u{0214}']),
+            ("latin capital letter u with double grave", vec!['\u{0214}']),
+            ("one", vec!['\u{91}']),
+            ("two", vec!['\u{92}']),
+            ("private", vec!['\u{91}', '\u{92}']),
+            ("use", vec!['\u{91}', '\u{92}']),
+            ("private use one", vec!['\u{91}']),
+            ("private use two", vec!['\u{92}']),
+            ("registered", vec!['\u{AE}']),
+            ("trade", vec!['\u{AE}']),
+            ("mark", vec!['\u{AE}']),
+            ("registered sign", vec!['\u{AE}']),
+            ("registered trade mark sign", vec!['\u{AE}']),
+            // Skip the "U": it's too short to be meaningful
+            ("zwj", vec!['\u{200D}']),
+        ]);
+        assert_eq!(have, want);
+    }
+}
+
+#[test]
+fn test_old_names() {
 }
 
 pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), Error> {
