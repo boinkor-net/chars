@@ -26,6 +26,10 @@ and nightly. Versions prior to 1.22 are not supported.
 
 `cargo install chars --git https://github.com/antifuchs/chars.git`
 
+### OS packages
+
+**Arch linux:** There's an [AUR package for chars](https://aur.archlinux.org/packages/chars/).
+
 ### Source installation
 1. Clone this repo
 2. `cargo install`
