@@ -6,7 +6,7 @@ use fst::Map;
 
 mod names;
 
-const BYTES: &'static [u8] = include_bytes!("name_fst.bin");
+const BYTES: &[u8] = include_bytes!("name_fst.bin");
 
 fn query_fst(word: &str) -> Vec<char> {
     lazy_static! {

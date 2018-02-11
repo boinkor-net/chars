@@ -2,7 +2,7 @@ use std::char;
 
 use super::unicode;
 
-const READ_BASES: &'static [u32] = &[16, 10, 8, 2];
+const READ_BASES: &[u32] = &[16, 10, 8, 2];
 
 /// Takes a stringly description of a character (the character itself,
 /// or a unicode code point name) and returns a Vec of Describable
