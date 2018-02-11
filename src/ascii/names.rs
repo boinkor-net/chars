@@ -8,7 +8,7 @@ pub struct Information {
     pub note: Option<&'static str>,
 }
 
-
+#[cfg_attr(rustfmt, rustfmt_skip)]
 pub static PRINTABLE_CHARS: &'static [Information; 128] = &[
     Information{value:'\u{0}', mnemonics:&["NUL"], synonyms:&["Null", "\\0"], note:None},
     Information{value:'\u{1}', mnemonics:&["SOH"], synonyms:&["Start Of Header"], note:None},
@@ -139,5 +139,3 @@ pub static PRINTABLE_CHARS: &'static [Information; 128] = &[
     Information{value:'~', mnemonics:&["~"], synonyms:&["Overline", "Tilde", "Swung Dash", "Squiggle", "Approx", "Wiggle", "Twiddle", "Enyay"], note:None},
     Information{value:'\u{7f}', mnemonics:&["DEL"], synonyms:&["Delete"], note:None},
 ];
-
-

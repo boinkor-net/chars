@@ -19,8 +19,8 @@ How do you pronounce "chars"? This is a contentious thing.
 
 ## Installation
 
-Prereqs: I am building `chars` on Rust 1.10. Rusts at 1.9 and above
-should work, but no guarantees.
+Prereqs: Travis CI builds `chars` on Rust 1.22, current stable, beta
+and nightly. Versions prior to 1.22 are not supported.
 
 ### Plain crate installation without source code
 

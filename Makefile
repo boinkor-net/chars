@@ -4,6 +4,9 @@ ADDITIONAL_FEATURES := ${ADDITIONAL_TRAVISCI_FEATURES}
 all: src/ascii/names.rs
 	cargo build --release
 
+fetch:
+	./data/unicode/retrieve.sh
+
 names: src/ascii/names.rs src/unicode/name_fst.bin
 
 src/ascii/names.rs: generator/src/main.rs generator/src/ascii.rs generator/Cargo.lock generator/Cargo.toml data/ascii/nametable

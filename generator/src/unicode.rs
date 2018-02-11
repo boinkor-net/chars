@@ -4,15 +4,16 @@ use std::num::ParseIntError;
 use std::path::Path;
 use std::fs::File;
 use std::io;
-use std::io::{BufReader,BufRead,BufWriter,Write};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 
-#[cfg(test)] use std::iter::FromIterator;
-#[cfg(test)] use std::collections::BTreeSet;
-
+#[cfg(test)]
+use std::iter::FromIterator;
+#[cfg(test)]
+use std::collections::BTreeSet;
 
 use fst_generator;
 use fst;
-use fst::{MapBuilder};
+use fst::MapBuilder;
 
 quick_error! {
     #[derive(Debug)]
@@ -64,20 +65,27 @@ fn test_processing() {
     }
     {
         let mut sorted_names = fst_generator::Names::new();
-        assert!(process_line(&mut sorted_names, "03BB;GREEK SMALL LETTER LAMDA;Ll;0;L;;;;;N;GREEK SMALL LETTER LAMBDA;;039B;;039B").unwrap());
+        assert!(
+            process_line(
+                &mut sorted_names,
+                "03BB;GREEK SMALL LETTER LAMDA;Ll;0;L;;;;;N;GREEK SMALL LETTER LAMBDA;;039B;;039B"
+            ).unwrap()
+        );
         let have = BTreeSet::from_iter(sorted_names.iter().map(|(name, chs)| {
             let v: Vec<char> = chs.into_iter().map(|ch| ch.to_owned()).collect();
             (name.as_str(), v)
         }));
         let want = BTreeSet::from_iter(vec![
             // Current unicode spelling:
-            ("greek", vec!['\u{03bb}']), ("greek small letter lamda", vec!['\u{03bb}']), ("lamda", vec!['\u{03bb}']),
+            ("greek", vec!['\u{03bb}']),
+            ("greek small letter lamda", vec!['\u{03bb}']),
+            ("lamda", vec!['\u{03bb}']),
             // Unicode 1.0 spelling:
-            ("greek small letter lambda", vec!['\u{03bb}']), ("lambda", vec!['\u{03bb}'])
+            ("greek small letter lambda", vec!['\u{03bb}']),
+            ("lambda", vec!['\u{03bb}']),
         ]);
         assert_eq!(have, want);
     }
-
 
     {
         let mut sorted_names = fst_generator::Names::new();
@@ -89,13 +97,19 @@ fn test_processing() {
         assert!(process_line(&mut sorted_names, "200D;ZWJ;abbreviation").unwrap());
 
         // And some from UnicodeData.txt:
-        assert!(process_line(&mut sorted_names,
-                             "00AE;REGISTERED SIGN;So;0;ON;;;;;N;REGISTERED TRADE MARK SIGN;;;;")
-                .unwrap());
-        assert!(process_line(&mut sorted_names,
-                             "0214;LATIN CAPITAL LETTER U WITH DOUBLE GRAVE;Lu;0;L;0055 \
-                              030F;;;;N;;;;0215;e")
-                .unwrap());
+        assert!(
+            process_line(
+                &mut sorted_names,
+                "00AE;REGISTERED SIGN;So;0;ON;;;;;N;REGISTERED TRADE MARK SIGN;;;;"
+            ).unwrap()
+        );
+        assert!(
+            process_line(
+                &mut sorted_names,
+                "0214;LATIN CAPITAL LETTER U WITH DOUBLE GRAVE;Lu;0;L;0055 \
+                 030F;;;;N;;;;0215;e"
+            ).unwrap()
+        );
 
         let have = BTreeSet::from_iter(sorted_names.iter().map(|(name, chs)| {
             let v: Vec<char> = chs.into_iter().map(|ch| ch.to_owned()).collect();
@@ -127,8 +141,7 @@ fn test_processing() {
 }
 
 #[test]
-fn test_old_names() {
-}
+fn test_old_names() {}
 
 pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), Error> {
     let reader = BufReader::new(try!(File::open(file)));
@@ -149,7 +162,9 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
     for (name, chs) in names.iter() {
         if chs.len() > 1 {
             let mut key = String::new();
-            for c in chs { key.push(*c) }
+            for c in chs {
+                key.push(*c)
+            }
 
             let num: u64 = (0xff << 32) | if results.contains_key(&key) {
                 *results.get(&key).unwrap()
@@ -168,12 +183,20 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
     // Now generate the multi-results file:
     let multi_result_filename = output.join("names.rs");
     let mut rust_out = BufWriter::new(try!(File::create(multi_result_filename)));
-    let mut ambiguous_chars: Vec<String> = vec!(String::new(); counter as usize);
+    let mut ambiguous_chars: Vec<String> = vec![String::new(); counter as usize];
     for (chars, i) in results {
         ambiguous_chars[i as usize] = chars;
     }
     try!(write!(&mut rust_out, "/// Generated with `make names`\n"));
-    try!(write!(&mut rust_out, "pub static AMBIGUOUS_CHARS: &'static [&'static str; {}] = &[\n", ambiguous_chars.len()));
+    try!(write!(
+        &mut rust_out,
+        "#[cfg_attr(rustfmt, rustfmt_skip)]\n"
+    ));
+    try!(write!(
+        &mut rust_out,
+        "pub static AMBIGUOUS_CHARS: &'static [&'static str; {}] = &[\n",
+        ambiguous_chars.len()
+    ));
     for chars in ambiguous_chars {
         try!(write!(&mut rust_out, "    {:?},\n", chars));
     }

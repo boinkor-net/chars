@@ -3,7 +3,7 @@ use std::str;
 use std::char;
 use std::convert;
 
-use byteorder::{ByteOrder, BigEndian};
+use byteorder::{BigEndian, ByteOrder};
 use unicode_names;
 use unicode_width::UnicodeWidthChar;
 
@@ -19,18 +19,23 @@ struct Describable {
 
 impl fmt::Display for Describable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        let cp : Codepoint = self.c.into();
+        let cp: Codepoint = self.c.into();
         try!(cp.fmt(f));
-        let printable : Printable = self.c.into();
+        let printable: Printable = self.c.into();
         try!(write!(f, "\n{}", printable));
         let unicode_name = unicode_names::name(self.c);
         if let Some(n) = unicode_name.clone() {
             try!(write!(f, "\nUnicode name: {}", n));
         }
         if let Some(ascii) = ascii::additional_names(self.c) {
-            let mut synonyms: Vec<&str> = vec!();
+            let mut synonyms: Vec<&str> = vec![];
             let mut xmls: Option<&str> = None;
-            let mnemos: Vec<&str> = ascii.mnemonics.iter().filter(|n| n.len() != 1).map(|s| *s).collect();
+            let mnemos: Vec<&str> = ascii
+                .mnemonics
+                .iter()
+                .filter(|n| n.len() != 1)
+                .map(|s| *s)
+                .collect();
             for syn in ascii.synonyms {
                 if syn.starts_with('&') && syn.ends_with(';') {
                     xmls = Some(syn);
@@ -61,7 +66,7 @@ impl fmt::Display for Describable {
 
 impl convert::From<char> for Describable {
     fn from(c: char) -> Describable {
-        Describable{c: c}
+        Describable { c: c }
     }
 }
 
@@ -71,31 +76,40 @@ struct Printable {
 
 impl convert::From<char> for Printable {
     fn from(c: char) -> Printable {
-        Printable{c: c}
+        Printable { c: c }
     }
 }
 
 fn control_char(ch: char) -> char {
     match ch as u8 {
         0x7f => '?',
-        _ => (b'@' + (ch as u8 & 0x1f)) as char
+        _ => (b'@' + (ch as u8 & 0x1f)) as char,
     }
 }
 
 impl fmt::Display for Printable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        let quote : String = self.c.escape_default().collect();
+        let quote: String = self.c.escape_default().collect();
         if self.c.is_control() {
-            try!(write!(f, "Control character; quotes as {}, called ^{}", quote, control_char(self.c)));
+            try!(write!(
+                f,
+                "Control character; quotes as {}, called ^{}",
+                quote,
+                control_char(self.c)
+            ));
         } else {
             if let (Some(width), Some(cjk_width)) = (self.c.width(), self.c.width_cjk()) {
                 if width == cjk_width {
                     try!(write!(f, "Width: {}, ", width));
                 } else {
-                    try!(write!(f, "Width: {} ({} in CJK context), ", width, cjk_width));
+                    try!(write!(
+                        f,
+                        "Width: {} ({} in CJK context), ",
+                        width, cjk_width
+                    ));
                 }
             }
-            if ! self.c.is_whitespace() {
+            if !self.c.is_whitespace() {
                 try!(write!(f, "prints as {}", self.c));
             } else {
                 try!(write!(f, "prints as `{}'", self.c));
@@ -128,15 +142,15 @@ enum Codepoint {
     ASCII7bit(char),
     Latin1(char),
     UnicodeBasic(char),
-    UnicodeWide(char)
+    UnicodeWide(char),
 }
 
 impl convert::From<char> for Codepoint {
     fn from(c: char) -> Codepoint {
         match c as u32 {
-            0 ... 127 => Codepoint::ASCII7bit(c),
-            128 ... 255 => Codepoint::Latin1(c),
-            256 ... 65535 => Codepoint::UnicodeBasic(c),
+            0...0x7F => Codepoint::ASCII7bit(c),
+            0x80...0xFF => Codepoint::Latin1(c),
+            0x0100...0xFFFF => Codepoint::UnicodeBasic(c),
             _ => Codepoint::UnicodeWide(c),
         }
     }
@@ -147,13 +161,24 @@ impl fmt::Display for Codepoint {
         match *self {
             Codepoint::ASCII7bit(c) => {
                 let num = c as u32;
-                write!(f, "ASCII {:1x}/{:1x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
-                       (num & 0xf0) >> 4, num & 0x0f, num, num, num, num)
+                write!(
+                    f,
+                    "ASCII {:1x}/{:1x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
+                    (num & 0xf0) >> 4,
+                    num & 0x0f,
+                    num,
+                    num,
+                    num,
+                    num
+                )
             }
             Codepoint::Latin1(c) => {
                 let num = c as u32;
-                write!(f, "LATIN1 {:02x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
-                       num, num, num, num, num)
+                write!(
+                    f,
+                    "LATIN1 {:02x}, {:3}, 0x{:02x}, 0{:03o}, bits {:08b}",
+                    num, num, num, num, num
+                )
             }
             Codepoint::UnicodeBasic(c) | Codepoint::UnicodeWide(c) => {
                 let num = c as u32;
@@ -166,8 +191,17 @@ impl fmt::Display for Codepoint {
                     Codepoint::UnicodeWide(_) => 8,
                     _ => 4,
                 };
-                write!(f, "U+{:0width$X}, &#{:}; 0x{:0width$X}, \\0{:o}, UTF-8: {}, UTF-16BE: {}",
-                       num, num, num, num, utf8, utf16, width = width)
+                write!(
+                    f,
+                    "U+{:0width$X}, &#{:}; 0x{:0width$X}, \\0{:o}, UTF-8: {}, UTF-16BE: {}",
+                    num,
+                    num,
+                    num,
+                    num,
+                    utf8,
+                    utf16,
+                    width = width
+                )
             }
         }
     }
@@ -208,12 +242,10 @@ impl fmt::Display for ByteRepresentation {
                 for byte in byte_iter {
                     try!(write!(f, " {:02x}", byte));
                 }
-            },
-            ByteRepresentation::UTF16BE(ref bytes) => {
-                for byte in bytes.iter() {
-                    try!(write!(f, "{:02x}", byte));
-                }
             }
+            ByteRepresentation::UTF16BE(ref bytes) => for byte in bytes.iter() {
+                try!(write!(f, "{:02x}", byte));
+            },
         }
         Ok(())
     }

@@ -6,16 +6,16 @@ use fst::Map;
 
 mod names;
 
-const BYTES: &'static [u8] = include_bytes!("name_fst.bin");
+const BYTES: &[u8] = include_bytes!("name_fst.bin");
 
 fn query_fst(word: &str) -> Vec<char> {
     lazy_static! {
         static ref FST: Map = Map::from_bytes(BYTES.to_owned()).unwrap();
     }
 
-    let mut chars: Vec<char> = vec!();
+    let mut chars: Vec<char> = vec![];
     if let Some(cp) = FST.get(word) {
-        if cp & (0xff<<32) != 0 {
+        if cp & (0xff << 32) != 0 {
             let index: usize = (cp as u32) as usize;
             for ch in names::AMBIGUOUS_CHARS[index].chars() {
                 chars.push(ch);
@@ -51,7 +51,7 @@ pub fn lookup_by_query(query: &str) -> Vec<char> {
             }
             candidates = BTreeSet::from_iter(candidates.intersection(&merge_candidates).cloned());
             if candidates.is_empty() {
-                return vec!();
+                return vec![];
             }
         }
     }
