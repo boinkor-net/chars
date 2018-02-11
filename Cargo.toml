@@ -3,6 +3,9 @@ name = "chars"
 version = "0.1.0"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
 
+# We use repo crates, crates.io does not want that:
+publish = false
+
 exclude = [
         "data/*",
         "generator/*",
