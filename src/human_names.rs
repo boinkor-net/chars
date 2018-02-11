@@ -17,14 +17,16 @@ pub fn from_arg(spec: &str) -> Vec<char> {
         spec.chars().next().map(|c| chars.push(c));
         try_names = false;
     } else if spec.starts_with("0x") || spec.starts_with("U+") {
-        let _ = u32::from_str_radix(&spec[2..], 16).ok().
-            map(|num| char::from_u32(num).map(|c| chars.push(c)));
+        let _ = u32::from_str_radix(&spec[2..], 16)
+            .ok()
+            .map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
 
     // Match plain numbers in all bases:
     for base in READ_BASES {
-        let _ = u32::from_str_radix(spec, *base).ok().
-            map(|num| char::from_u32(num).map(|c| chars.push(c)));
+        let _ = u32::from_str_radix(spec, *base)
+            .ok()
+            .map(|num| char::from_u32(num).map(|c| chars.push(c)));
     }
 
     // Match ^-escapes as control characters
@@ -32,7 +34,7 @@ pub fn from_arg(spec: &str) -> Vec<char> {
         let control = spec.as_bytes()[1];
         match control {
             0x3f => chars.push(0x7f as char), // ^? is DEL
-            _ => chars.push((spec.as_bytes()[1] & 0x1f) as char)
+            _ => chars.push((spec.as_bytes()[1] & 0x1f) as char),
         }
         try_names = false;
     }
