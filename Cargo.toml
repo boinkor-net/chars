@@ -1,6 +1,6 @@
 [package]
 name = "chars"
-version = "0.2.1"
+version = "0.2.2-alpha.0"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
 
 # We use repo crates, crates.io does not want that:
