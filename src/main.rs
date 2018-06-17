@@ -6,7 +6,7 @@ extern crate byteorder;
 extern crate fst;
 #[macro_use]
 extern crate lazy_static;
-extern crate unicode_names;
+extern crate unicode_names2;
 extern crate unicode_width;
 
 use std::env;
