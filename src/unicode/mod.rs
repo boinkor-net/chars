@@ -20,8 +20,8 @@ fn query_fst(word: &str) -> Vec<char> {
             for ch in names::AMBIGUOUS_CHARS[index].chars() {
                 chars.push(ch);
             }
-        } else {
-            char::from_u32(cp as u32).map(|ch| chars.push(ch));
+        } else if let Some(ch) = char::from_u32(cp as u32) {
+            chars.push(ch)
         }
     }
     chars

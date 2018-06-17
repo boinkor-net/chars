@@ -14,7 +14,9 @@ pub fn from_arg(spec: &str) -> Vec<char> {
 
     // match the character itself, or any of its names:
     if spec.chars().count() == 1 {
-        spec.chars().next().map(|c| chars.push(c));
+        if let Some(c) = spec.chars().next() {
+            chars.push(c)
+        }
         try_names = false;
     } else if spec.starts_with("0x") || spec.starts_with("U+") {
         let _ = u32::from_str_radix(&spec[2..], 16)

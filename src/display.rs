@@ -66,7 +66,7 @@ impl fmt::Display for Describable {
 
 impl convert::From<char> for Describable {
     fn from(c: char) -> Describable {
-        Describable { c: c }
+        Describable { c }
     }
 }
 
@@ -76,7 +76,7 @@ struct Printable {
 
 impl convert::From<char> for Printable {
     fn from(c: char) -> Printable {
-        Printable { c: c }
+        Printable { c }
     }
 }
 
