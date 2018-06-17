@@ -4,7 +4,7 @@ use std::char;
 use std::convert;
 
 use byteorder::{BigEndian, ByteOrder};
-use unicode_names;
+use unicode_names2;
 use unicode_width::UnicodeWidthChar;
 
 use super::ascii;
@@ -23,7 +23,7 @@ impl fmt::Display for Describable {
         try!(cp.fmt(f));
         let printable: Printable = self.c.into();
         try!(write!(f, "\n{}", printable));
-        let unicode_name = unicode_names::name(self.c);
+        let unicode_name = unicode_names2::name(self.c);
         if let Some(n) = unicode_name.clone() {
             try!(write!(f, "\nUnicode name: {}", n));
         }

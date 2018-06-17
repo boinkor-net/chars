@@ -12,7 +12,7 @@ exclude = [
 ]
 
 [dependencies]
-unicode_names = { git = 'https://github.com/Jokler/unicode_names', rev = 'd97b80c3c35b9f1d04085409087ef113c94cde17' }
+unicode_names2 = "0.2.1"
 unicode-width = "0.1.5"
 byteorder = "1"
 lazy_static = "1.0.0"
