@@ -1,7 +1,7 @@
-use std::fmt;
-use std::str;
 use std::char;
 use std::convert;
+use std::fmt;
+use std::str;
 
 use byteorder::{BigEndian, ByteOrder};
 use unicode_names2;

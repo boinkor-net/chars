@@ -11,9 +11,9 @@ extern crate unicode_width;
 
 use std::env;
 
+mod ascii;
 mod display;
 mod human_names;
-mod ascii;
 mod unicode;
 
 fn main() {
