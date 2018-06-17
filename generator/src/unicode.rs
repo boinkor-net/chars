@@ -1,19 +1,19 @@
 use std::char;
 use std::collections::BTreeMap;
-use std::num::ParseIntError;
-use std::path::Path;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::num::ParseIntError;
+use std::path::Path;
 
-#[cfg(test)]
-use std::iter::FromIterator;
 #[cfg(test)]
 use std::collections::BTreeSet;
+#[cfg(test)]
+use std::iter::FromIterator;
 
-use fst_generator;
 use fst;
 use fst::MapBuilder;
+use fst_generator;
 
 quick_error! {
     #[derive(Debug)]
@@ -37,10 +37,10 @@ quick_error! {
 }
 
 fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<bool, Error> {
-    if line.starts_with("#") || line.trim_left() == "" {
+    if line.starts_with('#') || line.trim_left() == "" {
         return Ok(false);
     }
-    let fields: Vec<&str> = line.splitn(15, ";").collect();
+    let fields: Vec<&str> = line.splitn(15, ';').collect();
     let cp = try!(u32::from_str_radix(fields[0], 16));
     if let Some(ch) = char::from_u32(cp) {
         let query = fields[1].to_owned();
@@ -166,13 +166,10 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
                 key.push(*c)
             }
 
-            let num: u64 = (0xff << 32) | if results.contains_key(&key) {
-                *results.get(&key).unwrap()
-            } else {
-                results.insert(key, counter);
+            let num: u64 = (0xff << 32) | *results.entry(key).or_insert_with(|| {
                 counter += 1;
                 counter - 1
-            };
+            });
             try!(map_builder.insert(name, num));
         } else {
             try!(map_builder.insert(name, *chs.iter().next().unwrap() as u64));
@@ -187,20 +184,20 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
     for (chars, i) in results {
         ambiguous_chars[i as usize] = chars;
     }
-    try!(write!(&mut rust_out, "/// Generated with `make names`\n"));
-    try!(write!(
+    try!(writeln!(&mut rust_out, "/// Generated with `make names`"));
+    try!(writeln!(
         &mut rust_out,
-        "#[cfg_attr(rustfmt, rustfmt_skip)]\n"
+        "#[cfg_attr(rustfmt, rustfmt_skip)]"
     ));
-    try!(write!(
+    try!(writeln!(
         &mut rust_out,
-        "pub static AMBIGUOUS_CHARS: &'static [&'static str; {}] = &[\n",
+        "pub static AMBIGUOUS_CHARS: &'static [&'static str; {}] = &[",
         ambiguous_chars.len()
     ));
     for chars in ambiguous_chars {
-        try!(write!(&mut rust_out, "    {:?},\n", chars));
+        try!(writeln!(&mut rust_out, "    {:?},", chars));
     }
-    try!(write!(&mut rust_out, "];\n"));
+    try!(writeln!(&mut rust_out, "];"));
 
     Ok(())
 }

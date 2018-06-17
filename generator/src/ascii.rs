@@ -21,12 +21,11 @@
 /// The first non-"called" name is the "Official name", and after is
 /// an (optional) C escape and other names, with a Note if any other
 /// name starts with a "#".
-
 use std::fmt;
 use std::fs::File;
 use std::io;
-use std::io::{BufReader, BufWriter};
 use std::io::{BufRead, Write};
+use std::io::{BufReader, BufWriter};
 use std::path::Path;
 
 use regex::Regex;
@@ -65,13 +64,13 @@ fn split_name_line(line: &str) -> Vec<String> {
     lazy_static! {
         static ref QUOTES: Regex = Regex::new("\",\\s*\"").unwrap();
         static ref RIGHT_QUOTE: Regex = Regex::new("\"\\s*,\\s*$").unwrap();
-        static ref LEFT_QUOTE: Regex = Regex::new("^\"").unwrap();
         static ref BACKSLASH_SOMETHING: Regex = Regex::new(r"\\(.)").unwrap();
     }
     let line = line.trim_left();
-    let line = LEFT_QUOTE.replace_all(RIGHT_QUOTE.replace_all(line, "$1").as_str(), "");
+    let line = RIGHT_QUOTE.replace_all(line, "$1");
+    let line = line.trim_left_matches('"');
     QUOTES
-        .split(line.as_str())
+        .split(line)
         .map(|s| BACKSLASH_SOMETHING.replace_all(s, "$1").to_owned())
         .collect()
 }
@@ -86,13 +85,13 @@ fn test_split_name_line() {
     assert_eq!(split_name_line(r#""\"","#), vec![r#"""#]);
 }
 
-fn process_ascii_nametable(input: File) -> Result<Vec<ASCIIEntry>, io::Error> {
+fn process_ascii_nametable(input: &File) -> Result<Vec<ASCIIEntry>, io::Error> {
     let mut char_code: u8 = 0;
 
     let mut entry = ASCIIEntry::new(char_code);
     let mut entries: Vec<ASCIIEntry> = vec![];
 
-    let reader = BufReader::new(&input);
+    let reader = BufReader::new(input);
     for line in reader.lines() {
         let line = try!(line);
         let line = line.as_str();
@@ -111,7 +110,7 @@ fn process_ascii_nametable(input: File) -> Result<Vec<ASCIIEntry>, io::Error> {
                 }
                 let line = BEGINNING.replace_all(line, "");
                 let line = line.trim_left();
-                if entry.mnemonics.len() == 0 {
+                if entry.mnemonics.is_empty() {
                     entry.mnemonics = split_name_line(line);
                 } else {
                     for element in split_name_line(line) {
@@ -141,7 +140,7 @@ impl<'a> fmt::Display for ASCIIForDisplay<'a> {
     }
 }
 
-const PREAMBLE: &'static str = r#"/// Generated with `make names`
+const PREAMBLE: &str = r#"/// Generated with `make names`
 
 #[derive(Clone)]
 pub struct Information {
@@ -159,7 +158,7 @@ pub fn write_ascii_name_data(
     output: &Path,
     sorted_names: &mut fst_generator::Names,
 ) {
-    let table = process_ascii_nametable(File::open(nametable).unwrap()).unwrap();
+    let table = process_ascii_nametable(&File::open(nametable).unwrap()).unwrap();
 
     for entry in table.clone() {
         sorted_names.insert(entry.mnemonics, entry.value);
@@ -169,13 +168,13 @@ pub fn write_ascii_name_data(
     let mut out = BufWriter::new(File::create(output).unwrap());
 
     write!(&mut out, "{}", PREAMBLE).unwrap();
-    write!(
+    writeln!(
         &mut out,
-        "pub static PRINTABLE_CHARS: &'static [Information; {}] = &[\n",
+        "pub static PRINTABLE_CHARS: &'static [Information; {}] = &[",
         table.len()
     ).unwrap();
     for entry in table.clone() {
-        write!(&mut out, "    {}\n", entry.for_display()).unwrap();
+        writeln!(&mut out, "    {}", entry.for_display()).unwrap();
     }
-    write!(&mut out, "];\n").unwrap();
+    writeln!(&mut out, "];").unwrap();
 }
