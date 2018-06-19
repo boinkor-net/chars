@@ -1,11 +1,21 @@
 #[macro_use]
 extern crate proptest;
 extern crate chars;
+extern crate unicode_names2;
 
 use chars::human_names;
 
 use proptest::prelude::*;
 use std::fmt::Write;
+
+fn diagnostics(ch: char, query: &str) -> String {
+    format!(
+        "char: {:?} / {}, query: {:?}",
+        ch,
+        ch.escape_unicode(),
+        query
+    )
+}
 
 proptest! {
     #[test]
@@ -19,20 +29,33 @@ proptest! {
     }
 
     #[test]
+    fn find_by_name(ch in prop::char::any().prop_filter("Must have a name",
+                                                        |c| unicode_names2::name(*c).is_some())) {
+        let query = unicode_names2::name(ch).unwrap().to_string();
+
+        let found = human_names::from_arg(&query);
+        assert!(found.len() >= 1, "{}", diagnostics(ch, &query));
+        assert!(found.contains(&ch), "{}", diagnostics(ch, &query));
+    }
+
+    #[test]
     fn find_any_by_hex(ch in prop::char::any()) {
         let num = ch as u32;
-        let found = human_names::from_arg(&format!("0x{:04x}", num));
+        let query = format!("0x{:04x}", num);
+        let found = human_names::from_arg(&query);
         println!("num: {:?}", num);
-        assert_eq!(found.len(), 1);
-        assert_eq!(found[0], ch);
+        assert_eq!(found.len(), 1, "{}", diagnostics(ch, &query));
+        assert_eq!(found[0], ch, "{}", diagnostics(ch, &query));
 
-        let found = human_names::from_arg(&format!("U+{:04x}", num));
-        assert_eq!(found.len(), 1);
-        assert_eq!(found[0], ch);
+        let query = format!("U+{:04x}", num);
+        let found = human_names::from_arg(&query);
+        assert_eq!(found.len(), 1, "{}", diagnostics(ch, &query));
+        assert_eq!(found[0], ch, "{}", diagnostics(ch, &query));
 
-        let found = human_names::from_arg(&format!("{:04x}", num));
-        assert!(found.len() >= 1);
-        assert!(found.contains(&ch));
+        let query = format!("{:04x}", num);
+        let found = human_names::from_arg(&query);
+        assert!(found.len() >= 1, "{}", diagnostics(ch, &query));
+        assert!(found.contains(&ch), "{}", diagnostics(ch, &query));
     }
 
     #[test]
