@@ -14,6 +14,7 @@ use std::iter::FromIterator;
 use fst;
 use fst::MapBuilder;
 use fst_generator;
+use unicode_names2;
 
 quick_error! {
     #[derive(Debug)]
@@ -22,6 +23,9 @@ quick_error! {
             from()
             cause(err)
             description("Hex number format error")
+        }
+        Block(ch: u32) {
+            display("Inconsistent block at {}", ch)
         }
         IO(err: io::Error) {
             from()
@@ -36,21 +40,36 @@ quick_error! {
     }
 }
 
-fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<bool, Error> {
+#[derive(PartialEq, Debug)]
+enum LineType {
+    None,
+    Simple,
+    BlockStart(u32),
+    BlockEnd(u32),
+}
+
+fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<LineType, Error> {
     if line.starts_with('#') || line.trim_left() == "" {
-        return Ok(false);
+        return Ok(LineType::None);
     }
     let fields: Vec<&str> = line.splitn(15, ';').collect();
     let cp = try!(u32::from_str_radix(fields[0], 16));
     if let Some(ch) = char::from_u32(cp) {
         let query = fields[1].to_owned();
+        if query.ends_with(", First>") {
+            return Ok(LineType::BlockStart(ch as u32));
+        } else if query.ends_with(", Last>") {
+            return Ok(LineType::BlockEnd(ch as u32));
+        }
         names.insert(vec![query], ch);
         match fields.get(10) {
             Some(&"") | None => {}
             Some(name) => names.insert(vec![name.to_string()], ch),
         }
+        Ok(LineType::Simple)
+    } else {
+        Ok(LineType::None)
     }
-    Ok(true)
 }
 
 #[test]
@@ -59,13 +78,20 @@ fn test_processing() {
         let mut sorted_names = fst_generator::Names::new();
 
         // Non-data gets skipped:
-        assert!(!process_line(&mut sorted_names, "# this is a comment").unwrap());
-        assert!(!process_line(&mut sorted_names, "").unwrap());
-        assert!(!process_line(&mut sorted_names, "    ").unwrap());
+        assert_eq!(
+            LineType::None,
+            process_line(&mut sorted_names, "# this is a comment").unwrap()
+        );
+        assert_eq!(LineType::None, process_line(&mut sorted_names, "").unwrap());
+        assert_eq!(
+            LineType::None,
+            process_line(&mut sorted_names, "    ").unwrap()
+        );
     }
     {
         let mut sorted_names = fst_generator::Names::new();
-        assert!(
+        assert_eq!(
+            LineType::Simple,
             process_line(
                 &mut sorted_names,
                 "03BB;GREEK SMALL LETTER LAMDA;Ll;0;L;;;;;N;GREEK SMALL LETTER LAMBDA;;039B;;039B"
@@ -90,24 +116,54 @@ fn test_processing() {
     {
         let mut sorted_names = fst_generator::Names::new();
         // Some from NameAliases.txt:
-        assert!(process_line(&mut sorted_names, "0091;PRIVATE USE ONE;control").unwrap());
-        assert!(process_line(&mut sorted_names, "0092;PRIVATE USE TWO;control").unwrap());
+        assert_eq!(
+            LineType::Simple,
+            process_line(&mut sorted_names, "0091;PRIVATE USE ONE;control").unwrap()
+        );
+        assert_eq!(
+            LineType::Simple,
+            process_line(&mut sorted_names, "0092;PRIVATE USE TWO;control").unwrap()
+        );
 
-        assert!(process_line(&mut sorted_names, "0005;ENQUIRY;control").unwrap());
-        assert!(process_line(&mut sorted_names, "200D;ZWJ;abbreviation").unwrap());
+        assert_eq!(
+            LineType::Simple,
+            process_line(&mut sorted_names, "0005;ENQUIRY;control").unwrap()
+        );
+        assert_eq!(
+            LineType::Simple,
+            process_line(&mut sorted_names, "200D;ZWJ;abbreviation").unwrap()
+        );
 
         // And some from UnicodeData.txt:
-        assert!(
+        assert_eq!(
+            LineType::Simple,
             process_line(
                 &mut sorted_names,
                 "00AE;REGISTERED SIGN;So;0;ON;;;;;N;REGISTERED TRADE MARK SIGN;;;;"
             ).unwrap()
         );
-        assert!(
+        assert_eq!(
+            LineType::Simple,
             process_line(
                 &mut sorted_names,
                 "0214;LATIN CAPITAL LETTER U WITH DOUBLE GRAVE;Lu;0;L;0055 \
                  030F;;;;N;;;;0215;e"
+            ).unwrap()
+        );
+
+        // CJK blocks:
+        assert_eq!(
+            LineType::BlockStart(0x3400),
+            process_line(
+                &mut sorted_names,
+                "3400;<CJK Ideograph Extension A, First>;Lo;0;L;;;;;N;;;;;"
+            ).unwrap()
+        );
+        assert_eq!(
+            LineType::BlockEnd(0x4DB5),
+            process_line(
+                &mut sorted_names,
+                "4DB5;<CJK Ideograph Extension A, Last>;Lo;0;L;;;;;N;;;;;"
             ).unwrap()
         );
 
@@ -145,8 +201,30 @@ fn test_old_names() {}
 
 pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), Error> {
     let reader = BufReader::new(try!(File::open(file)));
-    for line in reader.lines() {
-        try!(process_line(names, try!(line).as_str()));
+    let mut lines = reader.lines();
+    while let Some(line) = lines.next() {
+        match try!(process_line(names, try!(line).as_str())) {
+            LineType::Simple | LineType::None => {}
+            LineType::BlockStart(start) => {
+                let line = lines.next().ok_or(Error::Block(start))??;
+                match try!(process_line(names, &line)) {
+                    LineType::Simple | LineType::None | LineType::BlockStart(_) => {
+                        return Err(Error::Block(start))
+                    }
+                    // TODO: update to inclusive range syntax when it's stable:
+                    LineType::BlockEnd(end) => for i in start..end + 1 {
+                        if let Some(ch) = char::from_u32(i as u32) {
+                            if let Some(name) = unicode_names2::name(ch) {
+                                names.insert(vec![name.to_string()], ch);
+                            }
+                        }
+                    },
+                }
+            }
+            LineType::BlockEnd(end) => {
+                return Err(Error::Block(end));
+            }
+        }
     }
     Ok(())
 }
