@@ -62,7 +62,6 @@ fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<LineType
             return Ok(LineType::BlockEnd(ch as u32));
         }
         names.insert(vec![query], ch);
-        // TODO: Add the unicode_names2 name here
         match fields.get(10) {
             Some(&"") | None => {}
             Some(name) => names.insert(vec![name.to_string()], ch),
