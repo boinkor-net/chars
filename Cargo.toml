@@ -1,6 +1,6 @@
 [package]
 name = "chars"
-version = "0.3.1"
+version = "0.3.2"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
 description = "A commandline tool to display information about unicode characters"
 license = "MIT"
