@@ -24,8 +24,6 @@ unicode-width = "0.1.5"
 byteorder = "1"
 lazy_static = "1.0.0"
 fst = "0.3.0"
-# Only a dependency on nightly rust:
-clippy = {version = "*", optional = true}
 
 [dev-dependencies]
 proptest = "0.6.0"
