@@ -2,6 +2,8 @@
 name = "chars"
 version = "0.3.0"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
+description = "A commandline tool to display information about unicode characters"
+license = "MIT"
 
 exclude = [
         "data/*",
