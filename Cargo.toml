@@ -3,9 +3,6 @@ name = "chars"
 version = "0.2.2-alpha.0"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
 
-# We use repo crates, crates.io does not want that:
-publish = false
-
 exclude = [
         "data/*",
         "generator/*",
@@ -33,3 +30,12 @@ proptest = "0.6.0"
 
 [features]
 default = []
+
+[package.metadata.release]
+sign-commit = false
+upload-doc = false
+pre-release-commit-message = "Release {{version}} 🎉🎉"
+pro-release-commit-message = "Start next development iteration {{version}}"
+tag-message = "Release {{prefix}}{{version}}"
+dev-version-ext = "dev"
+tag-prefix = "v"
