@@ -34,7 +34,7 @@ impl fmt::Display for Describable {
                 .mnemonics
                 .iter()
                 .filter(|n| n.len() != 1)
-                .map(|s| *s)
+                .cloned()
                 .collect();
             for syn in ascii.synonyms {
                 if syn.starts_with('&') && syn.ends_with(';') {
@@ -243,9 +243,11 @@ impl fmt::Display for ByteRepresentation {
                     try!(write!(f, " {:02x}", byte));
                 }
             }
-            ByteRepresentation::UTF16BE(ref bytes) => for byte in bytes.iter() {
-                try!(write!(f, "{:02x}", byte));
-            },
+            ByteRepresentation::UTF16BE(ref bytes) => {
+                for byte in bytes.iter() {
+                    try!(write!(f, "{:02x}", byte));
+                }
+            }
         }
         Ok(())
     }
