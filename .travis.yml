@@ -18,7 +18,7 @@ env:
     - RUSTFMT_VERSION=0.3.6
 
 matrix:
-  fast_finish: true # Don't wait for the clippy build - it takes forever /:
+  fast_finish: true # Don't wait for the optional builds
   include:
     - rust: stable
       env:
@@ -35,7 +35,7 @@ matrix:
   allow_failures:
     - rust: nightly
       env:
-        - RUN_CLIPPY=true
+        - RUN_BENCH=true
         - RUN_TEST=false
 
 before_script:
