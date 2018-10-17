@@ -34,7 +34,7 @@ impl fmt::Display for Describable {
                 .mnemonics
                 .iter()
                 .filter(|n| n.len() != 1)
-                .map(|s| *s)
+                .cloned()
                 .collect();
             for syn in ascii.synonyms {
                 if syn.starts_with('&') && syn.ends_with(';') {
