@@ -45,7 +45,7 @@ before_script:
     fi'
   - bash -c 'if [[ "$RUN_CLIPPY" == "true" ]]; then
       rm -f ~/.cargo/bin/clippy;
-      cargo install clippy --force
+      rustup component add clippy-preview
       ;
     fi'
 
