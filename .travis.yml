@@ -20,7 +20,7 @@ env:
 matrix:
   fast_finish: true # Don't wait for the clippy build - it takes forever /:
   include:
-    - rust: nightly
+    - rust: stable
       env:
         - RUN_RUSTFMT=true
         - RUN_TEST=false
