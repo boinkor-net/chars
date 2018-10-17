@@ -243,9 +243,11 @@ impl fmt::Display for ByteRepresentation {
                     try!(write!(f, " {:02x}", byte));
                 }
             }
-            ByteRepresentation::UTF16BE(ref bytes) => for byte in bytes.iter() {
-                try!(write!(f, "{:02x}", byte));
-            },
+            ByteRepresentation::UTF16BE(ref bytes) => {
+                for byte in bytes.iter() {
+                    try!(write!(f, "{:02x}", byte));
+                }
+            }
         }
         Ok(())
     }
