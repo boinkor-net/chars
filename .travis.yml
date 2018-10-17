@@ -14,7 +14,6 @@ env:
   global:
     - RUN_TEST=true
     - RUN_CLIPPY=false
-    - RUN_BENCH=false
     - RUSTFMT_VERSION=0.3.6
 
 matrix:
@@ -26,17 +25,9 @@ matrix:
         - RUN_TEST=false
     - rust: nightly
       env:
-        - RUN_BENCH=true
-        - RUN_TEST=false
-    - rust: nightly
-      env:
         - RUN_CLIPPY=true
         - RUN_TEST=false
-  allow_failures:
-    - rust: nightly
-      env:
-        - RUN_BENCH=true
-        - RUN_TEST=false
+  allow_failures: []
 
 before_script:
   - bash -c 'if [[ "$RUN_RUSTFMT" == "true" ]]; then
@@ -57,10 +48,6 @@ script:
     fi'
   - bash -c 'if [[ "$RUN_RUSTFMT" == "true" ]]; then
       cargo fmt -v -- --check
-      ;
-    fi'
-  - bash -c 'if [[ "$RUN_BENCH" == "true" ]]; then
-      cargo bench
       ;
     fi'
   - bash -c 'if [[ "$RUN_CLIPPY" == "true" ]]; then
