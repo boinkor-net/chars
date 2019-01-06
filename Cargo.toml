@@ -39,3 +39,7 @@ pro-release-commit-message = "Start next development iteration {{version}}"
 tag-message = "Release {{prefix}}{{version}}"
 dev-version-ext = "dev"
 tag-prefix = "v"
+
+[badges]
+circle-ci = { repository = "antifuchs/chars", branch = "master" }
+maintenance = { status = "passively-maintained" }
