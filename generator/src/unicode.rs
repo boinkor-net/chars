@@ -49,7 +49,7 @@ enum LineType {
 }
 
 fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<LineType, Error> {
-    if line.starts_with('#') || line.trim_left() == "" {
+    if line.starts_with('#') || line.trim_start() == "" {
         return Ok(LineType::None);
     }
     let fields: Vec<&str> = line.splitn(15, ';').collect();
@@ -95,7 +95,8 @@ fn test_processing() {
             process_line(
                 &mut sorted_names,
                 "03BB;GREEK SMALL LETTER LAMDA;Ll;0;L;;;;;N;GREEK SMALL LETTER LAMBDA;;039B;;039B"
-            ).unwrap()
+            )
+            .unwrap()
         );
         let have = BTreeSet::from_iter(sorted_names.iter().map(|(name, chs)| {
             let v: Vec<char> = chs.into_iter().map(|ch| ch.to_owned()).collect();
@@ -140,7 +141,8 @@ fn test_processing() {
             process_line(
                 &mut sorted_names,
                 "00AE;REGISTERED SIGN;So;0;ON;;;;;N;REGISTERED TRADE MARK SIGN;;;;"
-            ).unwrap()
+            )
+            .unwrap()
         );
         assert_eq!(
             LineType::Simple,
@@ -148,7 +150,8 @@ fn test_processing() {
                 &mut sorted_names,
                 "0214;LATIN CAPITAL LETTER U WITH DOUBLE GRAVE;Lu;0;L;0055 \
                  030F;;;;N;;;;0215;e"
-            ).unwrap()
+            )
+            .unwrap()
         );
 
         // CJK blocks:
@@ -157,14 +160,16 @@ fn test_processing() {
             process_line(
                 &mut sorted_names,
                 "3400;<CJK Ideograph Extension A, First>;Lo;0;L;;;;;N;;;;;"
-            ).unwrap()
+            )
+            .unwrap()
         );
         assert_eq!(
             LineType::BlockEnd(0x4DB5),
             process_line(
                 &mut sorted_names,
                 "4DB5;<CJK Ideograph Extension A, Last>;Lo;0;L;;;;;N;;;;;"
-            ).unwrap()
+            )
+            .unwrap()
         );
 
         let have = BTreeSet::from_iter(sorted_names.iter().map(|(name, chs)| {
@@ -209,16 +214,18 @@ pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), E
                 let line = lines.next().ok_or(Error::Block(start))??;
                 match try!(process_line(names, &line)) {
                     LineType::Simple | LineType::None | LineType::BlockStart(_) => {
-                        return Err(Error::Block(start))
+                        return Err(Error::Block(start));
                     }
                     // TODO: update to inclusive range syntax when it's stable:
-                    LineType::BlockEnd(end) => for i in start..end + 1 {
-                        if let Some(ch) = char::from_u32(i as u32) {
-                            if let Some(name) = unicode_names2::name(ch) {
-                                names.insert(vec![name.to_string()], ch);
+                    LineType::BlockEnd(end) => {
+                        for i in start..end + 1 {
+                            if let Some(ch) = char::from_u32(i as u32) {
+                                if let Some(name) = unicode_names2::name(ch) {
+                                    names.insert(vec![name.to_string()], ch);
+                                }
                             }
                         }
-                    },
+                    }
                 }
             }
             LineType::BlockEnd(end) => {
@@ -244,10 +251,11 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
                 key.push(*c)
             }
 
-            let num: u64 = (0xff << 32) | *results.entry(key).or_insert_with(|| {
-                counter += 1;
-                counter - 1
-            });
+            let num: u64 = (0xff << 32)
+                | *results.entry(key).or_insert_with(|| {
+                    counter += 1;
+                    counter - 1
+                });
             try!(map_builder.insert(name, num));
         } else {
             try!(map_builder.insert(name, *chs.iter().next().unwrap() as u64));
@@ -263,10 +271,7 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
         ambiguous_chars[i as usize] = chars;
     }
     try!(writeln!(&mut rust_out, "/// Generated with `make names`"));
-    try!(writeln!(
-        &mut rust_out,
-        "#[cfg_attr(rustfmt, rustfmt_skip)]"
-    ));
+    try!(writeln!(&mut rust_out, "#[rustfmt::skip]"));
     try!(writeln!(
         &mut rust_out,
         "pub static AMBIGUOUS_CHARS: &'static [&'static str; {}] = &[",

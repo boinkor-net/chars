@@ -66,9 +66,9 @@ fn split_name_line(line: &str) -> Vec<String> {
         static ref RIGHT_QUOTE: Regex = Regex::new("\"\\s*,\\s*$").unwrap();
         static ref BACKSLASH_SOMETHING: Regex = Regex::new(r"\\(.)").unwrap();
     }
-    let line = line.trim_left();
+    let line = line.trim_start();
     let line = RIGHT_QUOTE.replace_all(line, "$1");
-    let line = line.trim_left_matches('"');
+    let line = line.trim_start_matches('"');
     QUOTES
         .split(line)
         .map(|s| BACKSLASH_SOMETHING.replace_all(s, "$1").to_owned())
@@ -109,7 +109,7 @@ fn process_ascii_nametable(input: &File) -> Result<Vec<ASCIIEntry>, io::Error> {
                     static ref BEGINNING: Regex = Regex::new(r"^[A-Za-z ]*:\s*").unwrap();
                 }
                 let line = BEGINNING.replace_all(line, "");
-                let line = line.trim_left();
+                let line = line.trim_start();
                 if entry.mnemonics.is_empty() {
                     entry.mnemonics = split_name_line(line);
                 } else {
@@ -150,7 +150,7 @@ pub struct Information {
     pub note: Option<&'static str>,
 }
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 "#;
 
 pub fn write_ascii_name_data(
@@ -172,7 +172,8 @@ pub fn write_ascii_name_data(
         &mut out,
         "pub static PRINTABLE_CHARS: &'static [Information; {}] = &[",
         table.len()
-    ).unwrap();
+    )
+    .unwrap();
     for entry in table.clone() {
         writeln!(&mut out, "    {}", entry.for_display()).unwrap();
     }
