@@ -13,7 +13,8 @@ fn build_stopwords() -> BTreeSet<&'static str> {
             "for",
             "symbol",
             "<control>",
-        ].into_iter(),
+        ]
+        .into_iter(),
     )
 }
 
@@ -28,7 +29,7 @@ fn add_component(result: &mut Vec<String>, component: &str) {
         static ref STOPS: BTreeSet<&'static str> = build_stopwords();
     }
     let component = component.to_lowercase();
-    let component = component.trim_right_matches(',');
+    let component = component.trim_end_matches(',');
 
     if STOPS.contains(component) || component.len() == 1 {
         return;

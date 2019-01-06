@@ -1,5 +1,5 @@
 /// Generated with `make names`
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 pub static AMBIGUOUS_CHARS: &'static [&'static str; 4711] = &[
     ",༂༃༊༓༗\u{f18}༶\u{f39}འ\u{fb0}࿃࿊࿋࿌࿐𑨩𑩺\u{11a95}𑲈",
     "འ\u{fb0}𑨩𑩺\u{11a95}𑲈",
