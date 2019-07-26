@@ -1,18 +1,5 @@
-extern crate getopts;
-#[macro_use]
-extern crate lazy_static;
-#[macro_use]
-extern crate quick_error;
-extern crate fst;
-extern crate regex;
-extern crate unicode_names2;
-
 use std::env;
 use std::path::Path;
-
-mod ascii;
-mod fst_generator;
-mod unicode;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -41,14 +28,5 @@ fn main() {
     let src_dirname = matches.free[1].clone();
     let src_dir = Path::new(src_dirname.as_str());
 
-    let mut sorted_names = fst_generator::Names::new();
-
-    ascii::write_ascii_name_data(
-        &data_dir.join("ascii/nametable"),
-        &src_dir.join("ascii/names.rs"),
-        &mut sorted_names,
-    );
-    unicode::read_names(&mut sorted_names, &data_dir.join("unicode/NameAliases.txt")).unwrap();
-    unicode::read_names(&mut sorted_names, &data_dir.join("unicode/UnicodeData.txt")).unwrap();
-    unicode::write_name_data(&sorted_names, &src_dir.join("unicode/")).unwrap();
+    generator::generate_files(data_dir, src_dir).unwrap();
 }

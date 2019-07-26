@@ -1,4 +1,4 @@
-# TemplateCIConfig { bench: BenchEntry(MatrixEntry { run: false, version: "nightly", install_commandline: None, commandline: "cargo bench" }), clippy: ClippyEntry(MatrixEntry { run: true, version: "stable", install_commandline: Some("rustup component add clippy"), commandline: "cargo clippy -- -D warnings" }), rustfmt: RustfmtEntry(MatrixEntry { run: true, version: "stable", install_commandline: Some("rustup component add rustfmt"), commandline: "cargo fmt -v -- --check" }), additional_matrix_entries: {}, cache: "cargo", os: "linux", dist: "xenial", versions: ["stable", "nightly"], test_commandline: "cargo test --verbose --all" }
+# TemplateCIConfig { bench: BenchEntry(MatrixEntry { run: false, run_cron: false, version: "nightly", install_commandline: None, commandline: "cargo bench" }), clippy: ClippyEntry(MatrixEntry { run: true, run_cron: false, version: "stable", install_commandline: Some("rustup component add clippy"), commandline: "cargo clippy -- -D warnings" }), rustfmt: RustfmtEntry(MatrixEntry { run: true, run_cron: false, version: "stable", install_commandline: Some("rustup component add rustfmt"), commandline: "cargo fmt -v -- --check" }), additional_matrix_entries: {"unicode_version": CustomEntry(MatrixEntry { run: true, run_cron: true, version: "stable", install_commandline: Some("apt-get update -q && apt-get -qy install git && make fetch && git add ."), commandline: "env PAGER=cat git diff --cached && git diff-index --cached --exit-code HEAD" })}, cache: "cargo", os: "linux", dist: "xenial", versions: ["stable", "nightly"], test_commandline: "cargo test --verbose --all", scheduled_test_branches: ["master"], test_schedule: "0 0 * * 0" }
 version: "2.1"
 
 executors:
@@ -24,14 +24,18 @@ commands:
           command: "rustc --version"
       - run:
           name: Test
-          command: "cargo test"
+          command: cargo test --verbose --all
 
 jobs:
   test:
     parameters:
       version:
         type: executor
+      version_name:
+        type: string
     executor: << parameters.version >>
+    environment:
+      CI_RUST_VERSION: << parameters.version_name >>
     steps:
       - checkout
       - cargo_test
@@ -74,6 +78,23 @@ jobs:
       - run:
           name: Bench
           command: cargo bench
+  unicode_version:
+    parameters:
+      version:
+        type: executor
+      version_name:
+        type: string
+    executor: << parameters.version >>
+    environment:
+      CI_RUST_VERSION: << parameters.version_name >>
+    steps:
+      - checkout
+      - run:
+          name: Install
+          command: apt-get update -q && apt-get -qy install git && make fetch && git add .
+      - run:
+          name: env PAGER=cat git diff --cached && git diff-index --cached --exit-code HEAD
+          command: env PAGER=cat git diff --cached && git diff-index --cached --exit-code HEAD
 
   ci_success:
     docker:
@@ -89,6 +110,7 @@ workflows:
       - test:
           name: test-stable
           version: stable
+          version_name: stable
           filters: {
   "branches": {
     "ignore": [
@@ -104,6 +126,7 @@ workflows:
       - test:
           name: test-nightly
           version: nightly
+          version_name: nightly
           filters: {
   "branches": {
     "ignore": [
@@ -144,9 +167,36 @@ workflows:
     ]
   }
 }
+      - unicode_version:
+          name: "unicode_version"
+          version: stable
+          version_name: stable
       - ci_success:
           requires:
           - test-stable
           - test-nightly
           - rustfmt
           - clippy
+          - unicode_version
+  scheduled_tests:
+    jobs:
+      - test:
+          name: test-stable
+          version: stable
+          version_name: stable
+      - test:
+          name: test-nightly
+          version: nightly
+          version_name: nightly
+      - unicode_version:
+          name: "unicode_version"
+          version: "stable"
+          version_name: "stable"
+    triggers:
+      - schedule:
+          cron: 0 0 * * 0
+          filters:
+            branches:
+              only: [
+  "master"
+]

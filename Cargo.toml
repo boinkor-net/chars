@@ -9,6 +9,7 @@ exclude = [
         "data/*",
         "generator/*",
 ]
+build = "build.rs"
 
 [lib]
 name = "chars"
@@ -28,6 +29,9 @@ fst = "0.3.0"
 [dev-dependencies]
 proptest = "0.6.0"
 
+[build-dependencies]
+generator = {path = "./generator"}
+
 [features]
 default = []
 
@@ -39,6 +43,13 @@ pro-release-commit-message = "Start next development iteration {{version}}"
 tag-message = "Release {{prefix}}{{version}}"
 dev-version-ext = "dev"
 tag-prefix = "v"
+
+[package.metadata.template_ci.additional_matrix_entries.unicode_version]
+run=true # TODO: change to false when we're done.
+run_cron=true
+version="stable"
+install_commandline="apt-get update -q && apt-get -qy install git && make fetch && git add ."
+commandline="env PAGER=cat git diff --cached && git diff-index --cached --exit-code HEAD"
 
 [badges]
 circle-ci = { repository = "antifuchs/chars", branch = "master" }

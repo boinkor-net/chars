@@ -1,6 +1,6 @@
 use std::char;
 use std::collections::BTreeMap;
-use std::fs::File;
+use std::fs::{create_dir_all, File};
 use std::io;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::num::ParseIntError;
@@ -218,7 +218,7 @@ pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), E
                     }
                     // TODO: update to inclusive range syntax when it's stable:
                     LineType::BlockEnd(end) => {
-                        for i in start..end + 1 {
+                        for i in start..=end {
                             if let Some(ch) = char::from_u32(i as u32) {
                                 if let Some(name) = unicode_names2::name(ch) {
                                     names.insert(vec![name.to_string()], ch);
@@ -237,6 +237,7 @@ pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), E
 }
 
 pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<(), Error> {
+    create_dir_all(output)?;
     let fst_byte_filename = output.join("name_fst.bin");
     let out = BufWriter::new(try!(File::create(fst_byte_filename)));
     let mut map_builder = try!(MapBuilder::new(out));
