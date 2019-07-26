@@ -177,6 +177,7 @@ workflows:
           - test-nightly
           - rustfmt
           - clippy
+          - unicode_version
   scheduled_tests:
     jobs:
       - test:
