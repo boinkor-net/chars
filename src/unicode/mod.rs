@@ -4,9 +4,8 @@ use std::iter::FromIterator;
 
 use fst::Map;
 
-mod names;
-
-const BYTES: &[u8] = include_bytes!("name_fst.bin");
+const BYTES: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/unicode/name_fst.bin"));
+include!(concat!(env!("OUT_DIR"), "/unicode/names.rs"));
 
 fn query_fst(word: &str) -> Vec<char> {
     lazy_static! {
@@ -17,7 +16,7 @@ fn query_fst(word: &str) -> Vec<char> {
     if let Some(cp) = FST.get(word) {
         if cp & (0xff << 32) != 0 {
             let index: usize = (cp as u32) as usize;
-            for ch in names::AMBIGUOUS_CHARS[index].chars() {
+            for ch in AMBIGUOUS_CHARS[index].chars() {
                 chars.push(ch);
             }
         } else if let Some(ch) = char::from_u32(cp as u32) {

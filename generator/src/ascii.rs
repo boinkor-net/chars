@@ -2,7 +2,7 @@
 ///
 /// Nametables have an almost deceptively simple format:
 ///
-///```
+///```text
 ///Mnemonics: "\"",
 ///ISO names: "Quotation Mark",
 ///Synonyms:  "Double Quote", "Quote", "String Quote",
@@ -22,6 +22,7 @@
 /// an (optional) C escape and other names, with a Note if any other
 /// name starts with a "#".
 use std::fmt;
+use std::fs;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, Write};
@@ -155,9 +156,10 @@ pub struct Information {
 
 pub fn write_ascii_name_data(
     nametable: &Path,
-    output: &Path,
+    output_dir: &Path,
     sorted_names: &mut fst_generator::Names,
 ) {
+    fs::create_dir_all(output_dir).unwrap();
     let table = process_ascii_nametable(&File::open(nametable).unwrap()).unwrap();
 
     for entry in table.clone() {
@@ -165,12 +167,12 @@ pub fn write_ascii_name_data(
         sorted_names.insert(entry.synonyms, entry.value);
     }
 
-    let mut out = BufWriter::new(File::create(output).unwrap());
+    let mut out = BufWriter::new(File::create(output_dir.join("names.rs")).unwrap());
 
     write!(&mut out, "{}", PREAMBLE).unwrap();
     writeln!(
         &mut out,
-        "pub static PRINTABLE_CHARS: &'static [Information; {}] = &[",
+        "static PRINTABLE_CHARS: &'static [Information; {}] = &[",
         table.len()
     )
     .unwrap();
