@@ -6,10 +6,10 @@ use std::env;
 use std::error::Error;
 use std::path::Path;
 
-extern crate generator;
+extern crate chars_data;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let out_dir = env::var("OUT_DIR")?;
-    generator::generate_files(Path::new("./data"), Path::new(&out_dir))?;
+    chars_data::generate_files(Path::new("./data"), Path::new(&out_dir))?;
     Ok(())
 }

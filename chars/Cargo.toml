@@ -7,7 +7,6 @@ license = "MIT"
 
 exclude = [
         "data/*",
-        "generator/*",
 ]
 build = "build.rs"
 
@@ -30,7 +29,7 @@ fst = "0.3.0"
 proptest = "0.6.0"
 
 [build-dependencies]
-generator = {path = "./generator"}
+chars_data = {path = "../chars_data"}
 
 [features]
 default = []

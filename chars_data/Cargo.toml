@@ -1,14 +1,14 @@
 [package]
-name = "generator"
+name = "chars_data"
 version = "0.1.0"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
 
 [lib]
-name = "generator"
+name = "chars_data"
 path = "src/lib.rs"
 
 [[bin]]
-name = "generator"
+name = "chars_data"
 path = "src/main.rs"
 
 [dependencies]

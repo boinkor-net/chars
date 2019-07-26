@@ -28,5 +28,5 @@ fn main() {
     let src_dirname = matches.free[1].clone();
     let src_dir = Path::new(src_dirname.as_str());
 
-    generator::generate_files(data_dir, src_dir).unwrap();
+    chars_data::generate_files(data_dir, src_dir).unwrap();
 }
