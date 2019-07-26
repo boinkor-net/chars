@@ -15,6 +15,9 @@ src/ascii/names.rs: generator/src/main.rs generator/src/ascii.rs generator/Cargo
 src/unicode/name_fst.bin: generator/src/unicode.rs generator/src/fst_generator.rs data/unicode/NameAliases.txt data/unicode/UnicodeData.txt
 	cd generator && cargo run -- ../data ../src
 
+generator/Cargo.lock: generator/Cargo.toml
+	cd generator && cargo update
+
 install: names
 	cargo install --force
 
