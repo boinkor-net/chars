@@ -1,56 +1,5 @@
-[package]
-name = "chars"
-version = "0.3.3-dev"
-authors = ["Andreas Fuchs <asf@boinkor.net>"]
-description = "A commandline tool to display information about unicode characters"
-license = "MIT"
+[workspace]
 
-exclude = [
-        "data/*",
-        "generator/*",
+members = [
+  "chars",
 ]
-build = "build.rs"
-
-[lib]
-name = "chars"
-path = "src/lib.rs"
-
-[[bin]]
-name = "chars"
-path = "src/main.rs"
-
-[dependencies]
-unicode_names2 = "0.3.0"
-unicode-width = "0.1.5"
-byteorder = "1"
-lazy_static = "1.0.0"
-fst = "0.3.0"
-
-[dev-dependencies]
-proptest = "0.6.0"
-
-[build-dependencies]
-generator = {path = "./generator"}
-
-[features]
-default = []
-
-[package.metadata.release]
-sign-commit = false
-upload-doc = false
-pre-release-commit-message = "Release {{version}} 🎉🎉"
-pro-release-commit-message = "Start next development iteration {{version}}"
-tag-message = "Release {{prefix}}{{version}}"
-dev-version-ext = "dev"
-tag-prefix = "v"
-
-[package.metadata.template_ci.additional_matrix_entries.unicode_version]
-run=true # TODO: change to false when we're done.
-run_cron=true
-version="stable"
-install_commandline="apt-get update -q && apt-get -qy install git && make fetch && git add ."
-commandline="env PAGER=cat git diff --cached && git diff-index --cached --exit-code HEAD"
-
-[badges]
-circle-ci = { repository = "antifuchs/chars", branch = "master" }
-maintenance = { status = "passively-maintained" }
