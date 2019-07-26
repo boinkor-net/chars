@@ -47,6 +47,12 @@ version="stable"
 install_commandline="apt-get update -q && apt-get -qy install git && make fetch && git add ."
 commandline="env PAGER=cat git diff --cached && git diff-index --cached --exit-code HEAD"
 
+[package.metadata.template_ci.additional_matrix_entries.generated_files]
+run=true
+version="stable"
+install_commandline="apt-get update -q && apt-get -qy install git && make names && git add ."
+commandline="env PAGER=cat git diff --cached && git diff-index --cached --exit-code HEAD"
+
 [badges]
 circle-ci = { repository = "antifuchs/chars", branch = "master" }
 maintenance = { status = "passively-maintained" }
