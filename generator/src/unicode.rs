@@ -218,7 +218,7 @@ pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), E
                     }
                     // TODO: update to inclusive range syntax when it's stable:
                     LineType::BlockEnd(end) => {
-                        for i in start..end + 1 {
+                        for i in start..=end {
                             if let Some(ch) = char::from_u32(i as u32) {
                                 if let Some(name) = unicode_names2::name(ch) {
                                     names.insert(vec![name.to_string()], ch);

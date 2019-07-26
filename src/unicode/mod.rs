@@ -35,7 +35,7 @@ pub fn lookup_by_query(query: &str) -> Vec<char> {
     }
 
     let mut candidates = BTreeSet::new();
-    if query.contains(|c: char| c.is_whitespace()) {
+    if query.contains(char::is_whitespace) {
         // Split multiple-word queries, AND them together:
         let mut words = query.split_whitespace();
         if let Some(word) = words.next() {
