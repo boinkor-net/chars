@@ -1,7 +1,11 @@
 [package]
 name = "chars_data"
-version = "0.1.0"
+version = "0.3.3-dev"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
+description = "Build-dependency for chars, the unicode character information CLI."
+readme = '../README.md'
+keywords = ["build-dependencies", "unicode", "codegen"]
+license = "MIT"
 
 [lib]
 name = "chars_data"

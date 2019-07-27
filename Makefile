@@ -5,7 +5,7 @@ all:
 	cargo build --release
 
 fetch:
-	./chars/data/unicode/retrieve.sh
+	./data/unicode/retrieve.sh
 
 install:
 	cargo install --force --path chars/

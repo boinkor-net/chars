@@ -5,9 +5,8 @@ authors = ["Andreas Fuchs <asf@boinkor.net>"]
 description = "A commandline tool to display information about unicode characters"
 license = "MIT"
 
-exclude = [
-        "data/*",
-]
+readme = '../README.md'
+
 build = "build.rs"
 
 [lib]
@@ -29,7 +28,7 @@ fst = "0.3.0"
 proptest = "0.6.0"
 
 [build-dependencies]
-chars_data = {path = "../chars_data"}
+chars_data = {path = "../chars_data", version = "0.3.3-dev"}
 
 [features]
 default = []
