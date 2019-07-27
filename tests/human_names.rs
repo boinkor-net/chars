@@ -18,6 +18,8 @@ fn diagnostics(ch: char, query: &str) -> String {
 }
 
 proptest! {
+    #![proptest_config(ProptestConfig::with_cases(100000))]
+
     #[test]
     fn find_any_by_identity(ch in prop::char::any()) {
         let mut chstr = String::new();
