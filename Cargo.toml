@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
-  "chars",
+  # Ordering here apparently defines release order:
   "chars_data",
+  "chars",
 ]
