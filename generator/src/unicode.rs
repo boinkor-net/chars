@@ -216,7 +216,6 @@ pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), E
                     LineType::Simple | LineType::None | LineType::BlockStart(_) => {
                         return Err(Error::Block(start));
                     }
-                    // TODO: update to inclusive range syntax when it's stable:
                     LineType::BlockEnd(end) => {
                         for i in start..=end {
                             if let Some(ch) = char::from_u32(i as u32) {
