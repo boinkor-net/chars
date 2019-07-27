@@ -4,8 +4,10 @@ version = "0.4.1-dev"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
 description = "A commandline tool to display information about unicode characters"
 license = "MIT"
-
+repository = "https://github.com/antifuchs/chars"
 readme = '../README.md'
+keywords = ['unicode', 'cli']
+categories = ['command-line-utilities', 'localization']
 
 build = "build.rs"
 
