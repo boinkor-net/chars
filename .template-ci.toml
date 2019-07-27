@@ -1,0 +1,7 @@
+# A cron-runnable job that notifies us when the Unicode data files change upstream:
+[additional_matrix_entries.unicode_version]
+run=false
+run_cron=true
+version="stable"
+install_commandline="apt-get update -q && apt-get -qy install git && make fetch && git add ."
+commandline="env PAGER=cat git diff --cached && git diff-index --cached --exit-code HEAD"
