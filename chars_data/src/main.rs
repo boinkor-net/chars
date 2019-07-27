@@ -22,11 +22,8 @@ fn main() {
         );
         return;
     }
-    let data_dirname = matches.free[0].clone();
-    let data_dir = Path::new(data_dirname.as_str());
-
     let src_dirname = matches.free[1].clone();
     let src_dir = Path::new(src_dirname.as_str());
 
-    chars_data::generate_files(data_dir, src_dir).unwrap();
+    chars_data::generate_files(src_dir).unwrap();
 }
