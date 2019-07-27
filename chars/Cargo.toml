@@ -28,7 +28,7 @@ fst = "0.3.0"
 proptest = "0.6.0"
 
 [build-dependencies]
-chars_data = {path = "../chars_data", version = "0.3.3-dev"}
+chars_data = {path = "../chars_data", version = "^0.4.0"}
 
 [features]
 default = []
