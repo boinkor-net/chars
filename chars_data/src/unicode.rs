@@ -2,7 +2,7 @@ use std::char;
 use std::collections::BTreeMap;
 use std::fs::{create_dir_all, File};
 use std::io;
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::io::{BufRead, BufWriter, Cursor, Write};
 use std::num::ParseIntError;
 use std::path::Path;
 
@@ -46,6 +46,17 @@ enum LineType {
     Simple,
     BlockStart(u32),
     BlockEnd(u32),
+}
+
+const NAME_ALIASES: &[u8] = include_bytes!("../data/unicode/NameAliases.txt");
+const UNICODE_DATA: &[u8] = include_bytes!("../data/unicode/UnicodeData.txt");
+
+pub(crate) fn name_aliases() -> Cursor<&'static [u8]> {
+    Cursor::new(NAME_ALIASES)
+}
+
+pub(crate) fn unicode_data() -> Cursor<&'static [u8]> {
+    Cursor::new(UNICODE_DATA)
 }
 
 fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<LineType, Error> {
@@ -204,8 +215,7 @@ fn test_processing() {
 #[test]
 fn test_old_names() {}
 
-pub fn read_names(names: &mut fst_generator::Names, file: &Path) -> Result<(), Error> {
-    let reader = BufReader::new(try!(File::open(file)));
+pub fn read_names(names: &mut fst_generator::Names, reader: impl BufRead) -> Result<(), Error> {
     let mut lines = reader.lines();
     while let Some(line) = lines.next() {
         match try!(process_line(names, try!(line).as_str())) {

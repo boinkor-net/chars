@@ -25,8 +25,8 @@ use std::fmt;
 use std::fs;
 use std::fs::File;
 use std::io;
-use std::io::{BufRead, Write};
-use std::io::{BufReader, BufWriter};
+use std::io::Write;
+use std::io::{BufRead, BufWriter, Cursor};
 use std::path::Path;
 
 use regex::Regex;
@@ -86,13 +86,15 @@ fn test_split_name_line() {
     assert_eq!(split_name_line(r#""\"","#), vec![r#"""#]);
 }
 
-fn process_ascii_nametable(input: &File) -> Result<Vec<ASCIIEntry>, io::Error> {
+const NAMETABLE: &[u8] = include_bytes!("../data/ascii/nametable");
+
+fn process_ascii_nametable() -> Result<Vec<ASCIIEntry>, io::Error> {
     let mut char_code: u8 = 0;
 
     let mut entry = ASCIIEntry::new(char_code);
     let mut entries: Vec<ASCIIEntry> = vec![];
 
-    let reader = BufReader::new(input);
+    let reader = Cursor::new(NAMETABLE);
     for line in reader.lines() {
         let line = try!(line);
         let line = line.as_str();
@@ -154,13 +156,9 @@ pub struct Information {
 #[rustfmt::skip]
 "#;
 
-pub fn write_ascii_name_data(
-    nametable: &Path,
-    output_dir: &Path,
-    sorted_names: &mut fst_generator::Names,
-) {
+pub fn write_ascii_name_data(output_dir: &Path, sorted_names: &mut fst_generator::Names) {
     fs::create_dir_all(output_dir).unwrap();
-    let table = process_ascii_nametable(&File::open(nametable).unwrap()).unwrap();
+    let table = process_ascii_nametable().unwrap();
 
     for entry in table.clone() {
         sorted_names.insert(entry.mnemonics, entry.value);

@@ -1,0 +1,6 @@
+sign-commit = false
+upload-doc = false
+pre-release-commit-message = "Release {{crate_name}} {{version}} 🎉🎉"
+pro-release-commit-message = "Start next {{crate_name}} development iteration {{version}}"
+tag-message = "Release {{crate_name}} {{prefix}}{{version}}"
+dev-version-ext = "dev"

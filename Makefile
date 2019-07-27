@@ -5,18 +5,15 @@ all:
 	cargo build --release
 
 fetch:
-	./data/unicode/retrieve.sh
+	./chars_data/data/unicode/retrieve.sh
 
 install:
-	cargo install --force
+	cargo install --force --path chars/
 
 test_travisci: test
 
 test:
-	cd generator ; cargo test
+	cd chars/generator ; cargo test
 	cargo test --features ${ADDITIONAL_FEATURES}
-
-test_clippy: names
-	cargo +nightly clippy
 
 .PHONY: all names install
