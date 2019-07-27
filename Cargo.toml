@@ -20,7 +20,7 @@ name = "chars"
 path = "src/main.rs"
 
 [dependencies]
-unicode_names2 = "0.2.1"
+unicode_names2 = "0.3.0"
 unicode-width = "0.1.5"
 byteorder = "1"
 lazy_static = "1.0.0"
