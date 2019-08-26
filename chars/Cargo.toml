@@ -23,7 +23,7 @@ path = "src/main.rs"
 unicode_names2 = "0.3.0"
 unicode-width = "0.1.5"
 byteorder = "1"
-lazy_static = "1.0.0"
+lazy_static = "1.4.0"
 fst = "0.3.0"
 
 [dev-dependencies]
