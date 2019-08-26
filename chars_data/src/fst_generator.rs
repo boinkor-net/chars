@@ -60,23 +60,19 @@ fn test_name_components() {
         Vec::from_iter(
             vec!["d with curl, latin small letter", "curl", "latin"]
                 .into_iter()
-                .map(|s| String::from(s))
+                .map(String::from)
         )
     );
     assert_eq!(
         name_components("Equals Sign"),
-        Vec::from_iter(
-            vec!["equals sign", "equals"]
-                .into_iter()
-                .map(|s| String::from(s))
-        )
+        Vec::from_iter(vec!["equals sign", "equals"].into_iter().map(String::from))
     );
     assert_eq!(
         name_components("UPSIDE-DOWN FACE"),
         Vec::from_iter(
             vec!["upside-down face", "upside-down", "upside", "down", "face"]
                 .into_iter()
-                .map(|s| String::from(s))
+                .map(String::from)
         )
     );
 }

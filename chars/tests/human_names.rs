@@ -18,7 +18,7 @@ fn diagnostics(ch: char, query: &str) -> String {
 }
 
 proptest! {
-    #![proptest_config(ProptestConfig::with_cases(100000))]
+    #![proptest_config(ProptestConfig::with_cases(100_000))]
 
     #[test]
     fn find_any_by_identity(ch in prop::char::any()) {
@@ -26,7 +26,7 @@ proptest! {
         chstr.write_char(ch).unwrap();
 
         let found = human_names::from_arg(&chstr);
-        assert!(found.len() >= 1);
+        assert!(!found.is_empty());
         assert!(found.contains(&ch));
     }
 
@@ -36,7 +36,7 @@ proptest! {
         let query = unicode_names2::name(ch).unwrap().to_string();
 
         let found = human_names::from_arg(&query);
-        assert!(found.len() >= 1, "{}", diagnostics(ch, &query));
+        assert!(!found.is_empty(), "{}", diagnostics(ch, &query));
         assert!(found.contains(&ch), "{}", diagnostics(ch, &query));
     }
 
@@ -56,7 +56,7 @@ proptest! {
 
         let query = format!("{:04x}", num);
         let found = human_names::from_arg(&query);
-        assert!(found.len() >= 1, "{}", diagnostics(ch, &query));
+        assert!(!found.is_empty(), "{}", diagnostics(ch, &query));
         assert!(found.contains(&ch), "{}", diagnostics(ch, &query));
     }
 

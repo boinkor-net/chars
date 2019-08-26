@@ -96,7 +96,7 @@ fn process_ascii_nametable() -> Result<Vec<ASCIIEntry>, io::Error> {
 
     let reader = Cursor::new(NAMETABLE);
     for line in reader.lines() {
-        let line = try!(line);
+        let line = line?;
         let line = line.as_str();
         match line.chars().next() {
             Some('#') | None => {}
@@ -134,11 +134,11 @@ fn process_ascii_nametable() -> Result<Vec<ASCIIEntry>, io::Error> {
 impl<'a> fmt::Display for ASCIIForDisplay<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let val = self.val.clone();
-        try!(write!(
+        write!(
             f,
             "Information{{value:{:?}, mnemonics:&{:?}, synonyms:&{:?}, note:{:?}}},",
             val.value, val.mnemonics, val.synonyms, val.note
-        ));
+        )?;
         Ok(())
     }
 }
@@ -170,7 +170,7 @@ pub fn write_ascii_name_data(output_dir: &Path, sorted_names: &mut fst_generator
     write!(&mut out, "{}", PREAMBLE).unwrap();
     writeln!(
         &mut out,
-        "static PRINTABLE_CHARS: &'static [Information; {}] = &[",
+        "static PRINTABLE_CHARS: &[Information; {}] = &[",
         table.len()
     )
     .unwrap();

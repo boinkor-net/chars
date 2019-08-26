@@ -64,7 +64,7 @@ fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<LineType
         return Ok(LineType::None);
     }
     let fields: Vec<&str> = line.splitn(15, ';').collect();
-    let cp = try!(u32::from_str_radix(fields[0], 16));
+    let cp = u32::from_str_radix(fields[0], 16)?;
     if let Some(ch) = char::from_u32(cp) {
         let query = fields[1].to_owned();
         if query.ends_with(", First>") {
@@ -110,7 +110,7 @@ fn test_processing() {
             .unwrap()
         );
         let have = BTreeSet::from_iter(sorted_names.iter().map(|(name, chs)| {
-            let v: Vec<char> = chs.into_iter().map(|ch| ch.to_owned()).collect();
+            let v: Vec<char> = chs.iter().map(|ch| ch.to_owned()).collect();
             (name.as_str(), v)
         }));
         let want = BTreeSet::from_iter(vec![
@@ -184,7 +184,7 @@ fn test_processing() {
         );
 
         let have = BTreeSet::from_iter(sorted_names.iter().map(|(name, chs)| {
-            let v: Vec<char> = chs.into_iter().map(|ch| ch.to_owned()).collect();
+            let v: Vec<char> = chs.iter().map(|ch| ch.to_owned()).collect();
             (name.as_str(), v)
         }));
         let want = BTreeSet::from_iter(vec![
@@ -218,11 +218,11 @@ fn test_old_names() {}
 pub fn read_names(names: &mut fst_generator::Names, reader: impl BufRead) -> Result<(), Error> {
     let mut lines = reader.lines();
     while let Some(line) = lines.next() {
-        match try!(process_line(names, try!(line).as_str())) {
+        match process_line(names, line?.as_str())? {
             LineType::Simple | LineType::None => {}
             LineType::BlockStart(start) => {
                 let line = lines.next().ok_or(Error::Block(start))??;
-                match try!(process_line(names, &line)) {
+                match process_line(names, &line)? {
                     LineType::Simple | LineType::None | LineType::BlockStart(_) => {
                         return Err(Error::Block(start));
                     }
@@ -248,8 +248,8 @@ pub fn read_names(names: &mut fst_generator::Names, reader: impl BufRead) -> Res
 pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<(), Error> {
     create_dir_all(output)?;
     let fst_byte_filename = output.join("name_fst.bin");
-    let out = BufWriter::new(try!(File::create(fst_byte_filename)));
-    let mut map_builder = try!(MapBuilder::new(out));
+    let out = BufWriter::new(File::create(fst_byte_filename)?);
+    let mut map_builder = MapBuilder::new(out)?;
 
     let mut counter: u64 = 0;
     let mut results: BTreeMap<String, u64> = BTreeMap::new();
@@ -266,31 +266,31 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
                     counter += 1;
                     counter - 1
                 });
-            try!(map_builder.insert(name, num));
+            map_builder.insert(name, num)?;
         } else {
-            try!(map_builder.insert(name, *chs.iter().next().unwrap() as u64));
+            map_builder.insert(name, *chs.iter().next().unwrap() as u64)?;
         }
     }
-    try!(map_builder.finish());
+    map_builder.finish()?;
 
     // Now generate the multi-results file:
     let multi_result_filename = output.join("names.rs");
-    let mut rust_out = BufWriter::new(try!(File::create(multi_result_filename)));
+    let mut rust_out = BufWriter::new(File::create(multi_result_filename)?);
     let mut ambiguous_chars: Vec<String> = vec![String::new(); counter as usize];
     for (chars, i) in results {
         ambiguous_chars[i as usize] = chars;
     }
-    try!(writeln!(&mut rust_out, "/// Generated with `make names`"));
-    try!(writeln!(&mut rust_out, "#[rustfmt::skip]"));
-    try!(writeln!(
+    writeln!(&mut rust_out, "/// Generated with `make names`")?;
+    writeln!(&mut rust_out, "#[rustfmt::skip]")?;
+    writeln!(
         &mut rust_out,
-        "pub static AMBIGUOUS_CHARS: &'static [&'static str; {}] = &[",
+        "pub static AMBIGUOUS_CHARS: &[&str; {}] = &[",
         ambiguous_chars.len()
-    ));
+    )?;
     for chars in ambiguous_chars {
-        try!(writeln!(&mut rust_out, "    {:?},", chars));
+        writeln!(&mut rust_out, "    {:?},", chars)?;
     }
-    try!(writeln!(&mut rust_out, "];"));
+    writeln!(&mut rust_out, "];")?;
 
     Ok(())
 }

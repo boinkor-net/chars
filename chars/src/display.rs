@@ -20,12 +20,12 @@ struct Describable {
 impl fmt::Display for Describable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let cp: Codepoint = self.c.into();
-        try!(cp.fmt(f));
+        cp.fmt(f)?;
         let printable: Printable = self.c.into();
-        try!(write!(f, "\n{}", printable));
+        write!(f, "\n{}", printable)?;
         let unicode_name = unicode_names2::name(self.c);
         if let Some(n) = unicode_name.clone() {
-            try!(write!(f, "\nUnicode name: {}", n));
+            write!(f, "\nUnicode name: {}", n)?;
         }
         if let Some(ascii) = ascii::additional_names(self.c) {
             let mut synonyms: Vec<&str> = vec![];
@@ -48,16 +48,16 @@ impl fmt::Display for Describable {
                 }
             }
             if !mnemos.is_empty() {
-                try!(write!(f, "\nCalled: {}", mnemos.join(", ")));
+                write!(f, "\nCalled: {}", mnemos.join(", "))?;
             }
             if !synonyms.is_empty() {
-                try!(write!(f, "\nAlso known as: {}", synonyms.join(", ")));
+                write!(f, "\nAlso known as: {}", synonyms.join(", "))?;
             }
             if let Some(xml) = xmls {
-                try!(write!(f, "\nEscapes in XML as: {}", xml));
+                write!(f, "\nEscapes in XML as: {}", xml)?;
             }
             if let Some(n) = ascii.note {
-                try!(write!(f, "\nNote: {}", n));
+                write!(f, "\nNote: {}", n)?;
             }
         }
         Ok(())
@@ -91,28 +91,24 @@ impl fmt::Display for Printable {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let quote: String = self.c.escape_default().collect();
         if self.c.is_control() {
-            try!(write!(
+            write!(
                 f,
                 "Control character; quotes as {}, called ^{}",
                 quote,
                 control_char(self.c)
-            ));
+            )?;
         } else {
             if let (Some(width), Some(cjk_width)) = (self.c.width(), self.c.width_cjk()) {
                 if width == cjk_width {
-                    try!(write!(f, "Width: {}, ", width));
+                    write!(f, "Width: {}, ", width)?;
                 } else {
-                    try!(write!(
-                        f,
-                        "Width: {} ({} in CJK context), ",
-                        width, cjk_width
-                    ));
+                    write!(f, "Width: {} ({} in CJK context), ", width, cjk_width)?;
                 }
             }
             if !self.c.is_whitespace() {
-                try!(write!(f, "prints as {}", self.c));
+                write!(f, "prints as {}", self.c)?;
             } else {
-                try!(write!(f, "prints as `{}'", self.c));
+                write!(f, "prints as `{}'", self.c)?;
             }
 
             // Check if we can up/downcase:
@@ -121,17 +117,17 @@ impl fmt::Display for Printable {
                 for c in self.c.to_lowercase() {
                     caseflipped.push(c);
                 }
-                try!(write!(f, "\nUpper case. Downcases to {}", caseflipped));
+                write!(f, "\nUpper case. Downcases to {}", caseflipped)?;
             } else if self.c.is_lowercase() {
                 for c in self.c.to_uppercase() {
                     caseflipped.push(c);
                 }
-                try!(write!(f, "\nLower case. Upcases to {}", caseflipped));
+                write!(f, "\nLower case. Upcases to {}", caseflipped)?;
             }
 
             // If we have quotable text, print that too:
             if quote.len() > 1 {
-                try!(write!(f, "\nQuotes as {}", quote));
+                write!(f, "\nQuotes as {}", quote)?;
             }
         }
         Ok(())
@@ -148,9 +144,9 @@ enum Codepoint {
 impl convert::From<char> for Codepoint {
     fn from(c: char) -> Codepoint {
         match c as u32 {
-            0...0x7F => Codepoint::ASCII7bit(c),
-            0x80...0xFF => Codepoint::Latin1(c),
-            0x0100...0xFFFF => Codepoint::UnicodeBasic(c),
+            0..=0x7F => Codepoint::ASCII7bit(c),
+            0x80..=0xFF => Codepoint::Latin1(c),
+            0x0100..=0xFFFF => Codepoint::UnicodeBasic(c),
             _ => Codepoint::UnicodeWide(c),
         }
     }
@@ -238,14 +234,14 @@ impl fmt::Display for ByteRepresentation {
         match *self {
             ByteRepresentation::UTF8(ref bytes) => {
                 let mut byte_iter = bytes.iter();
-                try!(write!(f, "{:02x}", byte_iter.next().unwrap()));
+                write!(f, "{:02x}", byte_iter.next().unwrap())?;
                 for byte in byte_iter {
-                    try!(write!(f, " {:02x}", byte));
+                    write!(f, " {:02x}", byte)?;
                 }
             }
             ByteRepresentation::UTF16BE(ref bytes) => {
                 for byte in bytes.iter() {
-                    try!(write!(f, "{:02x}", byte));
+                    write!(f, "{:02x}", byte)?;
                 }
             }
         }
