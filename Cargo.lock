@@ -68,7 +68,7 @@ name = "chars_data"
 version = "0.4.1"
 dependencies = [
  "fst 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "getopts 0.2.19 (registry+https://github.com/rust-lang/crates.io-index)",
+ "getopts 0.2.21 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "quick-error 1.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.1.80 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -104,7 +104,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "getopts"
-version = "0.2.19"
+version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "unicode-width 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -485,7 +485,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum fnv 1.0.6 (registry+https://github.com/rust-lang/crates.io-index)" = "2fad85553e09a6f881f739c29f0b00b0f01357c743266d478b68951ce23285f3"
 "checksum fst 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "927fb434ff9f0115b215dc0efd2e4fbdd7448522a92a1aa37c77d6a2f8f1ebd6"
 "checksum fuchsia-cprng 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "a06f77d526c1a601b7c4cdd98f54b5eaabffc14d5f2f0296febdc7f357c6d3ba"
-"checksum getopts 0.2.19 (registry+https://github.com/rust-lang/crates.io-index)" = "72327b15c228bfe31f1390f93dd5e9279587f0463836393c9df719ce62a3e450"
+"checksum getopts 0.2.21 (registry+https://github.com/rust-lang/crates.io-index)" = "14dbbfd5c71d70241ecf9e6f13737f7b5ce823821063188d7e46c41d371eebd5"
 "checksum getrandom 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)" = "fc344b02d3868feb131e8b5fe2b9b0a1cc42942679af493061fc13b853243872"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
 "checksum lazy_static 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)" = "76f033c7ad61445c5b347c7382dd1237847eb1bce590fe50365dcb33d546be73"
