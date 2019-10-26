@@ -2,7 +2,8 @@ This directory contains character reference names
 that are supported by HTML, and the code points
 to which they refer.
 
-The file was retrieved from https://html.spec.whatwg.org/entities.json
+The `entities.json` file was retrieved from
+https://html.spec.whatwg.org/entities.json
 using ./retrieve.sh on 2019-10-27, and correspond to
 *HTML Living Standard — Last Updated 25 October 2019*.
 
