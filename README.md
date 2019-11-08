@@ -31,8 +31,9 @@ and nightly. Versions prior to 1.26 are not supported.
 **Arch linux:** There's an [AUR package for chars](https://aur.archlinux.org/packages/chars/).
 
 ### Source installation
-1. Clone this repo
-2. `cargo install`
+1. Clone this repo,
+2. `cd` into the checkout,
+3. `cargo install --path chars`
 
 ## Running
 
