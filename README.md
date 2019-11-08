@@ -19,8 +19,10 @@ How do you pronounce "chars"? This is a contentious thing.
 
 ## Installation
 
-Prereqs: Travis CI builds `chars` on Rust 1.26, current stable, beta
-and nightly. Versions prior to 1.26 are not supported.
+This package is tested on [circle
+CI](https://circleci.com/gh/antifuchs/chars/tree/master) using the
+latest stable, beta and nightly releases. Older releases might work,
+but I'm focusing development mostly on the latest versions.
 
 ### Plain crate installation without source code
 
@@ -31,8 +33,9 @@ and nightly. Versions prior to 1.26 are not supported.
 **Arch linux:** There's an [AUR package for chars](https://aur.archlinux.org/packages/chars/).
 
 ### Source installation
-1. Clone this repo
-2. `cargo install`
+1. Clone this repo,
+2. `cd` into the checkout,
+3. `cargo install --path chars`
 
 ## Running
 
