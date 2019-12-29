@@ -75,7 +75,7 @@ fn process_line(names: &mut fst_generator::Names, line: &str) -> Result<LineType
         names.insert(vec![query], ch);
         match fields.get(10) {
             Some(&"") | None => {}
-            Some(name) => names.insert(vec![name.to_string()], ch),
+            Some(&name) => names.insert(vec![name.to_string()], ch),
         }
         Ok(LineType::Simple)
     } else {

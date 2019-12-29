@@ -1,6 +1,5 @@
-#[macro_use]
-extern crate proptest;
 extern crate chars;
+extern crate proptest;
 extern crate unicode_names2;
 
 use chars::human_names;
