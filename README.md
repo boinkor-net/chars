@@ -32,6 +32,8 @@ but I'm focusing development mostly on the latest versions.
 
 **Arch linux:** There's an [AUR package for chars](https://aur.archlinux.org/packages/chars/).
 
+**Windows:** There's a package available through [Chocolatey](https://chocolatey.org/packages/chars).
+
 ### Source installation
 1. Clone this repo,
 2. `cd` into the checkout,
