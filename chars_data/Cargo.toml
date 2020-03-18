@@ -21,5 +21,5 @@ regex = "0.1"
 lazy_static = "1.4.0"
 fst = "0.3"
 quick-error = "1.2.3"
-unicode_names2 = "0.3.0"
+unicode_names2 = "0.4.0"
 getopts = "0" # This should go in the bin deps section once https://github.com/rust-lang/cargo/issues/1982 is in.
