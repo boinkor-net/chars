@@ -1,6 +1,12 @@
 sign-commit = false
-upload-doc = false
-pre-release-commit-message = "Release {{crate_name}} {{version}} 🎉🎉"
-pro-release-commit-message = "Start next {{crate_name}} development iteration {{version}}"
-tag-message = "Release {{crate_name}} {{prefix}}{{version}}"
+pre-release-commit-message = "Release {{version}} 🎉🎉"
+post-release-commit-message = "Start next development iteration {{version}}"
+tag-message = "Release {{prefix}}{{version}}"
 dev-version-ext = "dev"
+tag-prefix = ""
+pre-release-replacements = [
+  {file="CHANGELOG.md", search="Unreleased", replace="{{version}}"},
+  {file="CHANGELOG.md", search="ReleaseDate", replace="{{date}}"},
+  {file="CHANGELOG.md", search="<!-- next-header -->", replace="<!-- next-header -->\n\n## [Unreleased] - ReleaseDate"},
+]
+consolidate-commits = true
