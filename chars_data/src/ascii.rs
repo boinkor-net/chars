@@ -72,7 +72,7 @@ fn split_name_line(line: &str) -> Vec<String> {
     let line = line.trim_start_matches('"');
     QUOTES
         .split(line)
-        .map(|s| BACKSLASH_SOMETHING.replace_all(s, "$1"))
+        .map(|s| BACKSLASH_SOMETHING.replace_all(s, "$1").into_owned())
         .collect()
 }
 
