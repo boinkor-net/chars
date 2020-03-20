@@ -9,7 +9,7 @@ include!(concat!(env!("OUT_DIR"), "/unicode/names.rs"));
 
 fn query_fst(word: &str) -> Vec<char> {
     lazy_static! {
-        static ref FST: Map = Map::from_bytes(BYTES.to_owned()).unwrap();
+        static ref FST: Map<Vec<u8>> = Map::new(BYTES.to_owned()).unwrap();
     }
 
     let mut chars: Vec<char> = vec![];
