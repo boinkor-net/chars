@@ -4,6 +4,8 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.5.0] - 2020-03-20
+
 ### Added
 
 * This changelog!
