@@ -7,48 +7,15 @@
 //! unicode things that still serializes to a single `u64` (for
 //! compatibility with the `fst` crate).
 
-use std::char::from_u32_unchecked;
 use std::fmt;
 
+pub mod flag;
+pub mod keycap;
 pub mod variant;
 
+use flag::Flag;
+use keycap::Keycap;
 use variant::VariantSelector;
-
-/// Possible keycap variations.
-///
-/// These include:
-/// * Digits [`0`][Keycap::Digit0] through [`9`][Keycap::Digit9]: 0️⃣, 1️⃣, 2️⃣, 3️⃣, 4️⃣, 5️⃣, 6️⃣, 7️⃣, 8️⃣, 9️⃣
-/// * The [Star/`*`][Keycap::Star] keycap: #️⃣
-/// * The [Pound/Octophorpe/Sharp/`#`][`Keycap::Pound`] keycap: *️⃣
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub enum Keycap {
-    Digit0 = (b'0' + 0) as isize,
-    Digit1 = (b'0' + 1) as isize,
-    Digit2 = (b'0' + 2) as isize,
-    Digit3 = (b'0' + 3) as isize,
-    Digit4 = (b'0' + 4) as isize,
-    Digit5 = (b'0' + 5) as isize,
-    Digit6 = (b'0' + 6) as isize,
-    Digit7 = (b'0' + 7) as isize,
-    Digit8 = (b'0' + 8) as isize,
-    Digit9 = (b'0' + 9) as isize,
-
-    Star = b'*' as isize,
-
-    Pound = b'#' as isize,
-}
-
-impl fmt::Display for Keycap {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        write!(
-            f,
-            "{}{}{}",
-            unsafe { from_u32_unchecked(*self as u32) },
-            '\u{FE0F}',
-            '\u{20E3}'
-        )
-    }
-}
 
 /// A unit of information used for the organization, control, or
 /// representation of textual data.
@@ -89,7 +56,7 @@ pub enum AbstractCharacter {
     /// DB](https://www.unicode.org/Public/emoji/13.0/emoji-sequences.txt).
     ///
     /// See also [TR51's flag appendix](http://www.unicode.org/reports/tr51/tr51-16.html#Flags).
-    FlagSequence(char, char),
+    FlagSequence(Flag),
 
     /// A sequence of code points joined by one or more zero-width
     /// joiner (ZWJ, `200D`) codepoints. These can be any arbitrary
@@ -104,7 +71,7 @@ impl fmt::Display for AbstractCharacter {
             AbstractCharacter::Codepoint(c) => write!(f, "{}", c),
             AbstractCharacter::Variation { main, variant } => write!(f, "{}{}", main, variant),
             AbstractCharacter::KeycapSequence(k) => write!(f, "{}", k),
-            AbstractCharacter::FlagSequence(a, b) => write!(f, "{}{}", a, b),
+            AbstractCharacter::FlagSequence(fl) => write!(f, "{}", fl),
             AbstractCharacter::EmojiZWJSequence(s) => write!(f, "{}", s),
         }
     }
