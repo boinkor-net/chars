@@ -26,8 +26,8 @@ use variant::VariantSelector;
 /// better display and explanation of the abstract character sequence
 /// to the user of `cha(rs)`.
 pub enum AbstractCharacter {
-    /// An abstract character represented single codepoint (a Unicode
-    /// scalar value, in reality).
+    /// An abstract character represented as a single codepoint (a
+    /// Unicode scalar value, in reality).
     Codepoint(char),
 
     /// A "variation selector" sequence, with the "main" codepoint modified
@@ -41,10 +41,7 @@ pub enum AbstractCharacter {
     /// * The `Basic_Emoji` group in [Emoji sequences](https://www.unicode.org/Public/emoji/13.0/emoji-sequences.txt)
     ///
     /// See also the [Variant sequences FAQ](http://unicode.org/faq/vs.html).
-    Variation {
-        main: char,
-        variant: VariantSelector,
-    },
+    Variation(char, VariantSelector),
 
     /// A "keycap" sequence in emoji sequences group
     /// `Emoji_Keycap_Sequence`.
@@ -69,7 +66,7 @@ impl fmt::Display for AbstractCharacter {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         match self {
             AbstractCharacter::Codepoint(c) => write!(f, "{}", c),
-            AbstractCharacter::Variation { main, variant } => write!(f, "{}{}", main, variant),
+            AbstractCharacter::Variation(main, variant) => write!(f, "{}{}", main, variant),
             AbstractCharacter::KeycapSequence(k) => write!(f, "{}", k),
             AbstractCharacter::FlagSequence(fl) => write!(f, "{}", fl),
             AbstractCharacter::EmojiZWJSequence(s) => write!(f, "{}", s),
