@@ -4,4 +4,5 @@ members = [
   # Ordering here apparently defines release order:
   "chars_data",
   "chars",
+  "chars_unicode_repr",
 ]
