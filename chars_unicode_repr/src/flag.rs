@@ -65,6 +65,7 @@ impl TryFrom<char> for RegionalIndicator {
 pub struct Flag(RegionalIndicator, RegionalIndicator);
 
 impl Flag {
+    #[cfg_attr(not(test), allow(dead_code))]
     pub(crate) fn new(f1: RegionalIndicator, f2: RegionalIndicator) -> Flag {
         Flag(f1, f2)
     }
