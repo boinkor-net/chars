@@ -1,9 +1,13 @@
 //! Variant selection.
 
+use num_derive::FromPrimitive;
+use num_traits::FromPrimitive;
 use std::char::from_u32_unchecked;
+use std::convert::TryFrom;
 use std::fmt;
+use std::ops::RangeInclusive;
 
-/// A selection of variant selectors.
+/// A selection of variant selectors and modifiers.
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum VariantSelector {
     /// Mongolian Free Variant Selector 1 (`180B`) through 3 (`180D`).
@@ -33,7 +37,15 @@ pub enum VariantSelector {
     /// for the [IVD sequence
     /// database](https://unicode.org/ivd/data/2017-12-12/IVD_Sequences.txt),
     /// see also [Unicode tr37](http://www.unicode.org/reports/tr37/).
+    ///
+    /// This is a confusing name, but it is the name that unicode specifies.
     VariationSelector(u8),
+}
+
+impl VariantSelector {
+    pub(crate) const TEXT_SELECTOR: char = '\u{FE0E}';
+    pub(crate) const EMOJI_SELECTOR: char = '\u{FE0F}';
+    pub(crate) const VARIATION_SELECTOR_RANGE: RangeInclusive<u32> = 0xE0100..=0xE01FF;
 }
 
 impl Into<char> for &VariantSelector {
@@ -42,12 +54,34 @@ impl Into<char> for &VariantSelector {
         match self {
             Mongolian(vs) => vs.into(),
             Generic(vs) => vs.into(),
-            Text => '\u{FE0E}',
-            Emoji => '\u{FE0F}',
+            Text => VariantSelector::TEXT_SELECTOR,
+            Emoji => VariantSelector::EMOJI_SELECTOR,
             VariationSelector(n) => {
                 let codepoint = '\u{E0100}' as u32 + (*n as u32);
                 unsafe { from_u32_unchecked(codepoint) }
             }
+        }
+    }
+}
+
+impl TryFrom<char> for VariantSelector {
+    /// The original char that is not a known variant selector:
+    type Error = char;
+
+    fn try_from(f: char) -> Result<Self, Self::Error> {
+        if let Ok(v) = MongolianVariant::try_from(f) {
+            Ok(VariantSelector::Mongolian(v))
+        } else if let Ok(v) = GenericVariant::try_from(f) {
+            Ok(VariantSelector::Generic(v))
+        } else if f == VariantSelector::TEXT_SELECTOR {
+            Ok(VariantSelector::Text)
+        } else if f == VariantSelector::EMOJI_SELECTOR {
+            Ok(VariantSelector::Emoji)
+        } else if VariantSelector::VARIATION_SELECTOR_RANGE.contains(&(f as u32)) {
+            let offset = VariantSelector::VARIATION_SELECTOR_RANGE.start() - (f as u32);
+            Ok(VariantSelector::VariationSelector(offset as u8))
+        } else {
+            Err(f)
         }
     }
 }
@@ -63,11 +97,11 @@ impl fmt::Display for VariantSelector {
 ///
 /// Unicode specifies sequences that use them in
 /// [StandardizedVariants.txt](https://unicode.org/Public/UCD/latest/ucd/StandardizedVariants.txt).
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, FromPrimitive)]
 pub enum MongolianVariant {
     VS1 = 0x180B,
-    VS2 = 0x180C,
-    VS3 = 0x180D,
+    VS2,
+    VS3,
 }
 
 impl Into<char> for &MongolianVariant {
@@ -76,30 +110,48 @@ impl Into<char> for &MongolianVariant {
     }
 }
 
+impl TryFrom<char> for MongolianVariant {
+    /// The original char that is not a mongolian variant selector
+    type Error = char;
+
+    fn try_from(f: char) -> Result<Self, Self::Error> {
+        MongolianVariant::from_u32(f as u32).ok_or(f)
+    }
+}
+
 /// The (generic) Variant Selector (`FE00` through `FE0D`).
 ///
 /// Unicode specifies sequences that use them in
 /// [StandardizedVariants.txt](https://unicode.org/Public/UCD/latest/ucd/StandardizedVariants.txt).
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, FromPrimitive)]
 pub enum GenericVariant {
     VS1 = 0xFE00,
-    VS2 = 0xFE01,
-    VS3 = 0xFE02,
-    VS4 = 0xFE03,
-    VS5 = 0xFE04,
-    VS6 = 0xFE05,
-    VS7 = 0xFE06,
-    VS8 = 0xFE07,
-    VS9 = 0xFE08,
-    VS10 = 0xFE09,
-    VS11 = 0xFE0A,
-    VS12 = 0xFE0B,
-    VS13 = 0xFE0C,
-    VS14 = 0xFE0D,
+    VS2,
+    VS3,
+    VS4,
+    VS5,
+    VS6,
+    VS7,
+    VS8,
+    VS9,
+    VS10,
+    VS11,
+    VS12,
+    VS13,
+    VS14,
 }
 
 impl Into<char> for &GenericVariant {
     fn into(self) -> char {
         unsafe { from_u32_unchecked(*self as u32) }
+    }
+}
+
+impl TryFrom<char> for GenericVariant {
+    /// The original char that is not a generic variant selector
+    type Error = char;
+
+    fn try_from(f: char) -> Result<Self, Self::Error> {
+        GenericVariant::from_u32(f as u32).ok_or(f)
     }
 }
