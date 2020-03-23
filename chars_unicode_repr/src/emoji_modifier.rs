@@ -8,7 +8,7 @@ use std::fmt;
 /// type `RGI_Emoji_Modifier_Sequence`.
 #[derive(Copy, Clone, Debug, PartialEq, FromPrimitive)]
 pub enum EmojiModifier {
-    Type12 = 0x1F3FB,
+    Type1To2 = 0x1F3FB,
     Type3,
     Type4,
     Type5,
