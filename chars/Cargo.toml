@@ -24,7 +24,7 @@ unicode_names2 = "0.4.0"
 unicode-width = "0.1.7"
 byteorder = "1"
 lazy_static = "1.4.0"
-fst = "0.4.3"
+fst = "0.4.4"
 
 [dev-dependencies]
 proptest = "0.9.6"
