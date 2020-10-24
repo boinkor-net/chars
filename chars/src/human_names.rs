@@ -1,4 +1,5 @@
 use std::char;
+use std::cmp::Reverse;
 
 use super::unicode;
 
@@ -46,7 +47,7 @@ pub fn from_arg(spec: &str) -> Vec<char> {
         chars.append(unicode::lookup_by_query(spec).as_mut());
     }
 
-    chars.sort_by(|a, b| b.cmp(a));
+    chars.sort_by_key(|&k| Reverse(k));
     chars.dedup();
     chars
 }
