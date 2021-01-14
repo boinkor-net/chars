@@ -1,21 +1,19 @@
 use std::collections::btree_map;
 use std::collections::{BTreeMap, BTreeSet};
-use std::iter::FromIterator;
 
 fn build_stopwords() -> BTreeSet<&'static str> {
-    BTreeSet::from_iter(
-        vec![
-            "with",
-            "sign",
-            "small",
-            "letter",
-            "digit",
-            "for",
-            "symbol",
-            "<control>",
-        ]
-        .into_iter(),
-    )
+    vec![
+        "with",
+        "sign",
+        "small",
+        "letter",
+        "digit",
+        "for",
+        "symbol",
+        "<control>",
+    ]
+    .into_iter()
+    .collect()
 }
 
 #[test]

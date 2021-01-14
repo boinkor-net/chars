@@ -1,6 +1,5 @@
 use std::char;
 use std::collections::BTreeSet;
-use std::iter::FromIterator;
 
 use fst::Map;
 
@@ -48,7 +47,10 @@ pub fn lookup_by_query(query: &str) -> Vec<char> {
             for ch in query_fst(word) {
                 merge_candidates.insert(ch);
             }
-            candidates = BTreeSet::from_iter(candidates.intersection(&merge_candidates).cloned());
+            candidates = candidates
+                .intersection(&merge_candidates)
+                .cloned()
+                .collect();
             if candidates.is_empty() {
                 return vec![];
             }
