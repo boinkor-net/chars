@@ -11,10 +11,8 @@ use std::collections::BTreeSet;
 #[cfg(test)]
 use std::iter::FromIterator;
 
-use fst;
-use fst::MapBuilder;
 use crate::fst_generator;
-use unicode_names2;
+use fst::MapBuilder;
 
 quick_error! {
     #[derive(Debug)]

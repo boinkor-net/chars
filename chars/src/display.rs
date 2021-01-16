@@ -4,7 +4,6 @@ use std::fmt;
 use std::str;
 
 use byteorder::{BigEndian, ByteOrder};
-use unicode_names2;
 use unicode_width::UnicodeWidthChar;
 
 use super::ascii;
