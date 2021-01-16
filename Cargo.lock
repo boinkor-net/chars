@@ -66,7 +66,6 @@ name = "chars_data"
 version = "0.5.1-dev"
 dependencies = [
  "fst",
- "getopts",
  "lazy_static",
  "quick-error",
  "regex",
@@ -84,15 +83,6 @@ name = "fst"
 version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d79238883cf0307100b90aba4a755d8051a3182305dfe7f649a1e9dc0517006f"
-
-[[package]]
-name = "getopts"
-version = "0.2.21"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14dbbfd5c71d70241ecf9e6f13737f7b5ce823821063188d7e46c41d371eebd5"
-dependencies = [
- "unicode-width",
-]
 
 [[package]]
 name = "getrandom"
