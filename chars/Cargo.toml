@@ -8,6 +8,7 @@ repository = "https://github.com/antifuchs/chars"
 readme = '../README.md'
 keywords = ['unicode', 'cli']
 categories = ['command-line-utilities', 'localization']
+edition = "2018"
 
 build = "build.rs"
 

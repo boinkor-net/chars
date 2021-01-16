@@ -100,7 +100,7 @@ impl Names {
         }
     }
 
-    pub fn iter(&self) -> btree_map::Iter<String, BTreeSet<char>> {
+    pub fn iter(&self) -> btree_map::Iter<'_, String, BTreeSet<char>> {
         self.map.iter()
     }
 }

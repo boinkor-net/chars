@@ -1,5 +1,3 @@
-extern crate chars;
-
 use std::env;
 
 use chars::display;

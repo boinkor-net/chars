@@ -29,9 +29,10 @@ use std::io::Write;
 use std::io::{BufRead, BufWriter, Cursor};
 use std::path::Path;
 
+use anyhow::{Context, Result};
 use regex::Regex;
 
-use fst_generator;
+use crate::fst_generator;
 
 #[derive(Debug, Clone)]
 struct ASCIIEntry {
@@ -56,7 +57,7 @@ impl ASCIIEntry {
         }
     }
 
-    fn for_display(&self) -> ASCIIForDisplay {
+    fn for_display(&self) -> ASCIIForDisplay<'_> {
         ASCIIForDisplay { val: self }
     }
 }
@@ -132,7 +133,7 @@ fn process_ascii_nametable() -> Result<Vec<ASCIIEntry>, io::Error> {
 }
 
 impl<'a> fmt::Display for ASCIIForDisplay<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let val = self.val.clone();
         write!(
             f,
@@ -156,26 +157,31 @@ pub struct Information {
 #[rustfmt::skip]
 "#;
 
-pub fn write_ascii_name_data(output_dir: &Path, sorted_names: &mut fst_generator::Names) {
-    fs::create_dir_all(output_dir).unwrap();
-    let table = process_ascii_nametable().unwrap();
+pub fn write_ascii_name_data(
+    output_dir: &Path,
+    sorted_names: &mut fst_generator::Names,
+) -> Result<()> {
+    fs::create_dir_all(output_dir)?;
+    let table = process_ascii_nametable()?;
 
     for entry in table.clone() {
         sorted_names.insert(entry.mnemonics, entry.value);
         sorted_names.insert(entry.synonyms, entry.value);
     }
 
-    let mut out = BufWriter::new(File::create(output_dir.join("names.rs")).unwrap());
+    let mut out = BufWriter::new(
+        File::create(output_dir.join("names.rs")).context("Creading ASCII names.rs")?,
+    );
 
-    write!(&mut out, "{}", PREAMBLE).unwrap();
+    write!(&mut out, "{}", PREAMBLE)?;
     writeln!(
         &mut out,
         "static PRINTABLE_CHARS: &[Information; {}] = &[",
         table.len()
-    )
-    .unwrap();
+    )?;
     for entry in table.clone() {
-        writeln!(&mut out, "    {}", entry.for_display()).unwrap();
+        writeln!(&mut out, "    {}", entry.for_display())?;
     }
-    writeln!(&mut out, "];").unwrap();
+    writeln!(&mut out, "];")?;
+    Ok(())
 }
