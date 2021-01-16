@@ -56,7 +56,7 @@ impl ASCIIEntry {
         }
     }
 
-    fn for_display(&self) -> ASCIIForDisplay {
+    fn for_display(&self) -> ASCIIForDisplay<'_> {
         ASCIIForDisplay { val: self }
     }
 }
@@ -132,7 +132,7 @@ fn process_ascii_nametable() -> Result<Vec<ASCIIEntry>, io::Error> {
 }
 
 impl<'a> fmt::Display for ASCIIForDisplay<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let val = self.val.clone();
         write!(
             f,

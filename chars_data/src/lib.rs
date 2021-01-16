@@ -1,13 +1,9 @@
 //! Generator for chars(1) data files.
 
-extern crate getopts;
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate quick_error;
-extern crate fst;
-extern crate regex;
-extern crate unicode_names2;
 
 use std::error::Error;
 use std::path::Path;

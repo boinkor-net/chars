@@ -18,7 +18,7 @@ struct Describable {
 }
 
 impl fmt::Display for Describable {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let cp: Codepoint = self.c.into();
         cp.fmt(f)?;
         let printable: Printable = self.c.into();
@@ -88,7 +88,7 @@ fn control_char(ch: char) -> char {
 }
 
 impl fmt::Display for Printable {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let quote: String = self.c.escape_default().collect();
         if self.c.is_control() {
             write!(
@@ -153,7 +153,7 @@ impl convert::From<char> for Codepoint {
 }
 
 impl fmt::Display for Codepoint {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         match *self {
             Codepoint::ASCII7bit(c) => {
                 let num = c as u32;
@@ -230,7 +230,7 @@ impl<'a> convert::From<str::Bytes<'a>> for ByteRepresentation {
 }
 
 impl fmt::Display for ByteRepresentation {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         match *self {
             ByteRepresentation::UTF8(ref bytes) => {
                 let mut byte_iter = bytes.iter();
