@@ -4,6 +4,11 @@
 
 ## [Unreleased] - ReleaseDate
 
+### Changed
+
+  Switched rust edition to 2018. This changes the minimum supported
+  rust version.
+
 ## [0.5.0] - 2020-03-20
 
 ### Added
