@@ -31,7 +31,7 @@ use std::path::Path;
 
 use regex::Regex;
 
-use fst_generator;
+use crate::fst_generator;
 
 #[derive(Debug, Clone)]
 struct ASCIIEntry {

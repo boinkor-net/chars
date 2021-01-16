@@ -13,7 +13,7 @@ use std::iter::FromIterator;
 
 use fst;
 use fst::MapBuilder;
-use fst_generator;
+use crate::fst_generator;
 use unicode_names2;
 
 quick_error! {
