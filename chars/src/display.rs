@@ -134,7 +134,7 @@ impl fmt::Display for Printable {
 }
 
 enum Codepoint {
-    ASCII7bit(char),
+    Ascii7Bit(char),
     Latin1(char),
     UnicodeBasic(char),
     UnicodeWide(char),
@@ -143,7 +143,7 @@ enum Codepoint {
 impl convert::From<char> for Codepoint {
     fn from(c: char) -> Codepoint {
         match c as u32 {
-            0..=0x7F => Codepoint::ASCII7bit(c),
+            0..=0x7F => Codepoint::Ascii7Bit(c),
             0x80..=0xFF => Codepoint::Latin1(c),
             0x0100..=0xFFFF => Codepoint::UnicodeBasic(c),
             _ => Codepoint::UnicodeWide(c),
@@ -154,7 +154,7 @@ impl convert::From<char> for Codepoint {
 impl fmt::Display for Codepoint {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         match *self {
-            Codepoint::ASCII7bit(c) => {
+            Codepoint::Ascii7Bit(c) => {
                 let num = c as u32;
                 write!(
                     f,
@@ -203,8 +203,8 @@ impl fmt::Display for Codepoint {
 }
 
 enum ByteRepresentation {
-    UTF8(Vec<u8>),
-    UTF16BE(Vec<u8>),
+    Utf8(Vec<u8>),
+    Utf16Be(Vec<u8>),
 }
 
 impl<'a> convert::From<str::EncodeUtf16<'a>> for ByteRepresentation {
@@ -217,28 +217,28 @@ impl<'a> convert::From<str::EncodeUtf16<'a>> for ByteRepresentation {
             buf.extend_from_slice(&split_word);
         }
 
-        ByteRepresentation::UTF16BE(buf)
+        ByteRepresentation::Utf16Be(buf)
     }
 }
 
 impl<'a> convert::From<str::Bytes<'a>> for ByteRepresentation {
     fn from(bs: str::Bytes<'a>) -> ByteRepresentation {
         let bytes: Vec<u8> = bs.collect();
-        ByteRepresentation::UTF8(bytes)
+        ByteRepresentation::Utf8(bytes)
     }
 }
 
 impl fmt::Display for ByteRepresentation {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         match *self {
-            ByteRepresentation::UTF8(ref bytes) => {
+            ByteRepresentation::Utf8(ref bytes) => {
                 let mut byte_iter = bytes.iter();
                 write!(f, "{:02x}", byte_iter.next().unwrap())?;
                 for byte in byte_iter {
                     write!(f, " {:02x}", byte)?;
                 }
             }
-            ByteRepresentation::UTF16BE(ref bytes) => {
+            ByteRepresentation::Utf16Be(ref bytes) => {
                 for byte in bytes.iter() {
                     write!(f, "{:02x}", byte)?;
                 }

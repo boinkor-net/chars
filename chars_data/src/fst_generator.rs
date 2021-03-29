@@ -43,8 +43,7 @@ fn add_component(result: &mut Vec<String>, component: &str) {
 }
 
 fn name_components(name: &str) -> Vec<String> {
-    let mut result = vec![];
-    result.push(name.to_lowercase());
+    let mut result = vec![name.to_lowercase()];
     for component in name.split_whitespace() {
         add_component(&mut result, component);
     }
