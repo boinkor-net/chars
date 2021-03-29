@@ -35,7 +35,7 @@ use regex::Regex;
 use crate::fst_generator;
 
 #[derive(Debug, Clone)]
-struct ASCIIEntry {
+struct AsciiEntry {
     value: char,
     mnemonics: Vec<String>,
     synonyms: Vec<String>,
@@ -43,13 +43,13 @@ struct ASCIIEntry {
 }
 
 #[derive(Debug)]
-struct ASCIIForDisplay<'a> {
-    val: &'a ASCIIEntry,
+struct AsciiForDisplay<'a> {
+    val: &'a AsciiEntry,
 }
 
-impl ASCIIEntry {
-    fn new(code: u8) -> ASCIIEntry {
-        ASCIIEntry {
+impl AsciiEntry {
+    fn new(code: u8) -> AsciiEntry {
+        AsciiEntry {
             value: code as char,
             mnemonics: vec![],
             synonyms: vec![],
@@ -57,8 +57,8 @@ impl ASCIIEntry {
         }
     }
 
-    fn for_display(&self) -> ASCIIForDisplay<'_> {
-        ASCIIForDisplay { val: self }
+    fn for_display(&self) -> AsciiForDisplay<'_> {
+        AsciiForDisplay { val: self }
     }
 }
 
@@ -89,11 +89,11 @@ fn test_split_name_line() {
 
 const NAMETABLE: &[u8] = include_bytes!("../data/ascii/nametable");
 
-fn process_ascii_nametable() -> Result<Vec<ASCIIEntry>, io::Error> {
+fn process_ascii_nametable() -> Result<Vec<AsciiEntry>, io::Error> {
     let mut char_code: u8 = 0;
 
-    let mut entry = ASCIIEntry::new(char_code);
-    let mut entries: Vec<ASCIIEntry> = vec![];
+    let mut entry = AsciiEntry::new(char_code);
+    let mut entries: Vec<AsciiEntry> = vec![];
 
     let reader = Cursor::new(NAMETABLE);
     for line in reader.lines() {
@@ -105,7 +105,7 @@ fn process_ascii_nametable() -> Result<Vec<ASCIIEntry>, io::Error> {
                 if line == "%%" {
                     entries.push(entry);
                     char_code += 1;
-                    entry = ASCIIEntry::new(char_code);
+                    entry = AsciiEntry::new(char_code);
                     continue;
                 }
                 // Otherwise, not at a spec boundary. Let's add names:
@@ -132,7 +132,7 @@ fn process_ascii_nametable() -> Result<Vec<ASCIIEntry>, io::Error> {
     Ok(entries)
 }
 
-impl<'a> fmt::Display for ASCIIForDisplay<'a> {
+impl<'a> fmt::Display for AsciiForDisplay<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let val = self.val.clone();
         write!(
