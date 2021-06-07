@@ -92,9 +92,9 @@ checksum = "2fad85553e09a6f881f739c29f0b00b0f01357c743266d478b68951ce23285f3"
 
 [[package]]
 name = "fst"
-version = "0.4.6"
+version = "0.4.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e398fae362f4124bbe630d99519fb2d68a03e2e3a23b441028cdcdc4f4895687"
+checksum = "7ab85b9b05e3978cc9a9cf8fea7f01b494e1a09ed3037e16ba39edc7a29eb61a"
 
 [[package]]
 name = "getrandom"
