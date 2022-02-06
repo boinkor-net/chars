@@ -1,6 +1,6 @@
 [package]
 name = "chars_data"
-version = "0.5.1-dev"
+version = "0.6.0"
 authors = ["Andreas Fuchs <asf@boinkor.net>"]
 description = "Build-dependency for chars, the unicode character information CLI."
 repository = "https://github.com/antifuchs/chars"
