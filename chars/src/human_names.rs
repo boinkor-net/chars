@@ -74,7 +74,7 @@ fn from_arg_translates_numbers() {
     assert_eq!('0', *iter.next().unwrap());
 
     assert_eq!(2, from_arg("0").len());
-    assert_eq!(0x30 as char, *from_arg("0").iter().next().unwrap());
+    assert_eq!(0x30 as char, *from_arg("0").get(0).unwrap());
 
     assert_eq!(1, from_arg("0x0").len());
     assert_eq!(1, from_arg("0x41").len());

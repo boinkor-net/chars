@@ -179,7 +179,7 @@ pub fn write_ascii_name_data(
         "static PRINTABLE_CHARS: &[Information; {}] = &[",
         table.len()
     )?;
-    for entry in table.clone() {
+    for entry in table {
         writeln!(&mut out, "    {}", entry.for_display())?;
     }
     writeln!(&mut out, "];")?;
