@@ -4,6 +4,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+### Added
+* Support for Unicode 14.
+
 ## [0.5.0] - 2020-03-20
 
 ### Added
