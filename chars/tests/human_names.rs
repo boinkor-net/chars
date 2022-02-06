@@ -1,5 +1,3 @@
-use unicode_names2;
-
 use chars::human_names;
 
 use proptest::prelude::*;
