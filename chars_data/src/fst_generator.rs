@@ -75,7 +75,7 @@ fn test_name_components() {
     );
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Names {
     map: BTreeMap<String, BTreeSet<char>>,
 }
