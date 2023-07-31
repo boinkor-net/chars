@@ -207,7 +207,7 @@ pub fn read_names(names: &mut fst_generator::Names, reader: impl BufRead) -> Res
                 match process_line(names, &line)? {
                     LineType::BlockEnd(end) => {
                         for i in start..=end {
-                            if let Some(ch) = char::from_u32(i as u32) {
+                            if let Some(ch) = char::from_u32(i) {
                                 if let Some(name) = unicode_names2::name(ch) {
                                     names.insert(vec![name.to_string()], ch);
                                 }
