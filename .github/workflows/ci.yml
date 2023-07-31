@@ -62,12 +62,15 @@ jobs:
   cargo_clippy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.3.4
-    - name: "cargo clippy"
-      uses: actions-rs/clippy-check@v1
+    - uses: actions/checkout@v3
+    - uses: dtolnay/rust-toolchain@stable
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        args: -- -D warnings
+        components: clippy
+    - uses: giraffate/clippy-action@v1
+      with:
+        reporter: 'github-pr-review'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        clippy_flags: -- -D warnings
 
   # cargo_bench:
   #   runs-on: ubuntu-latest
