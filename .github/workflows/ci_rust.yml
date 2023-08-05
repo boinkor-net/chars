@@ -5,6 +5,8 @@ on:
 jobs:
   rust_lints:
     uses: "boinkor-net/ci-baseline-rust/.github/workflows/ci_baseline_rust_lints.yml@main"
+    with:
+      manifest_dir: .
 
   rust_tests:
     uses: "boinkor-net/ci-baseline-rust/.github/workflows/ci_baseline_rust_tests.yml@main"
@@ -16,3 +18,4 @@ jobs:
     with:
       rust_toolchain: ${{matrix.rust_toolchain}}
       cargo_test_args: ${{matrix.cargo_test_args}}
+      manifest_dir: .
