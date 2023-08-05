@@ -4,6 +4,8 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.7.0] - 2023-08-05
+
 ### Added
 * Support for Unicode 15.
 
