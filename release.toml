@@ -3,4 +3,3 @@ pre-release-commit-message = "Release {{version}} 🎉🎉"
 tag-message = "Release {{prefix}}{{version}}"
 tag-prefix = ""
 consolidate-commits = false
-consolidate-pushes = true
