@@ -5,7 +5,7 @@ use std::fmt::Write;
 
 fn diagnostics(ch: char, query: &str) -> String {
     format!(
-        "char: {:?} / {}, query: {:?}",
+        "char: {:?} / {}, query: {:?}; maybe `make fetch` needs to be run",
         ch,
         ch.escape_unicode(),
         query
