@@ -31,7 +31,7 @@ fst = "0.4.7"
 proptest = "1.0.0"
 
 [build-dependencies]
-chars_data = {path = "../chars_data", version = "^0.6.0" }
+chars_data = {path = "../chars_data", version = "^0.7.0" }
 
 [features]
 default = []
