@@ -19,3 +19,4 @@ jobs:
       rust_toolchain: ${{matrix.rust_toolchain}}
       cargo_test_args: ${{matrix.cargo_test_args}}
       manifest_dir: .
+      apt_install_packages: ""
