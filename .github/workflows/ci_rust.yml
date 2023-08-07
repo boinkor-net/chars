@@ -7,6 +7,7 @@ jobs:
     uses: "boinkor-net/ci-baseline-rust/.github/workflows/ci_baseline_rust_lints.yml@main"
     with:
       manifest_dir: .
+      apt_install_packages: ""
 
   rust_tests:
     uses: "boinkor-net/ci-baseline-rust/.github/workflows/ci_baseline_rust_tests.yml@main"
