@@ -2,6 +2,8 @@
 - "directory": "/"
   "groups":
     "cargo":
+      "exclude-patterns":
+      - "unicode_names2"
       "patterns":
       - "*"
   "open-pull-requests-limit": 10
@@ -12,6 +14,7 @@
 - "directory": "/"
   "groups":
     "github-actions":
+      "exclude-patterns": []
       "patterns":
       - "*"
   "open-pull-requests-limit": 10
