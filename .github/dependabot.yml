@@ -14,7 +14,6 @@
 - "directory": "/"
   "groups":
     "github-actions":
-      "exclude-patterns": []
       "patterns":
       - "*"
   "open-pull-requests-limit": 10
