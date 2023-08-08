@@ -2,16 +2,8 @@
 # readable, but please don't edit it.
 
 "jobs":
-  "any_ci":
-    "runs-on": "ubuntu-latest"
-    "steps":
-    - "name": "Immediate success for improved visibility on github merge queue"
-      "run": "true"
-  "ci_rust":
-    "secrets": "inherit"
-    "uses": "./.github/workflows/ci_rust.yml"
-  "overall_ci":
-    "if": "always()"
+  "can_enqueue":
+    "if": "always() && github.event_name != 'merge_group'"
     "needs":
     - "ci_rust"
     "permissions":
@@ -22,9 +14,32 @@
         "NEEDS_JSON": "${{toJSON(needs)}}"
       "name": "Transform outcomes"
       "run": |
-        echo "ALL_SUCCESS=$(echo "$NEEDS_JSON" | jq '. | to_entries | map(.value.result == "success") | all')" >>$GITHUB_ENV
+        echo "ALL_SUCCESS=$(echo "$NEEDS_JSON" | jq '. | to_entries | map([.value.result == "success", .value.result == "skipped"] | any) | all')" >>$GITHUB_ENV
     - "name": "check"
       "run": "[ $ALL_SUCCESS == true ]"
+  "can_merge":
+    "if": "always() && github.event_name == 'merge_group'"
+    "needs":
+    - "ci_rust"
+    "permissions":
+      "actions": "read"
+    "runs-on": "ubuntu-latest"
+    "steps":
+    - "env":
+        "NEEDS_JSON": "${{toJSON(needs)}}"
+      "name": "Transform outcomes"
+      "run": |
+        echo "ALL_SUCCESS=$(echo "$NEEDS_JSON" | jq '. | to_entries | map([.value.result == "success", .value.result == "skipped"] | any) | all')" >>$GITHUB_ENV
+    - "name": "check"
+      "run": "[ $ALL_SUCCESS == true ]"
+  "can_see_status":
+    "runs-on": "ubuntu-latest"
+    "steps":
+    - "name": "Immediate success for improved visibility on github merge queue"
+      "run": "true"
+  "ci_rust":
+    "secrets": "inherit"
+    "uses": "./.github/workflows/ci_rust.yml"
 "name": "CI"
 "on":
   "merge_group": {}
