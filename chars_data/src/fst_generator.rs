@@ -91,10 +91,7 @@ impl Names {
     pub fn insert(&mut self, names: Vec<String>, ch: char) {
         for name in names {
             for component in name_components(name.as_str()) {
-                self.map
-                    .entry(component)
-                    .or_insert_with(BTreeSet::new)
-                    .insert(ch);
+                self.map.entry(component).or_default().insert(ch);
             }
         }
     }
