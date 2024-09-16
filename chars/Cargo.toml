@@ -24,11 +24,11 @@ path = "src/main.rs"
 unicode_names2 = "0.6.0"
 unicode-width = "0.1.13"
 byteorder = "1"
-lazy_static = "1.4.0"
+lazy_static = "1.5.0"
 fst = "0.4.7"
 
 [dev-dependencies]
-proptest = "1.4.0"
+proptest = "1.5.0"
 
 [build-dependencies]
 chars_data = {path = "../chars_data", version = "^0.7.0" }
