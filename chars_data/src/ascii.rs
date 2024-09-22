@@ -137,8 +137,8 @@ impl<'a> fmt::Display for AsciiForDisplay<'a> {
         let val = self.val.clone();
         write!(
             f,
-            "Information{{value:{:?}, mnemonics:&{:?}, synonyms:&{:?}, note:{:?}}},",
-            val.value, val.mnemonics, val.synonyms, val.note
+            "Information{{mnemonics:&{:?}, synonyms:&{:?}, note:{:?}}},",
+            val.mnemonics, val.synonyms, val.note
         )?;
         Ok(())
     }
@@ -148,7 +148,6 @@ const PREAMBLE: &str = r#"/// Generated with `make names`
 
 #[derive(Clone)]
 pub struct Information {
-    pub value: char,
     pub mnemonics: &'static [&'static str],
     pub synonyms: &'static [&'static str],
     pub note: Option<&'static str>,
