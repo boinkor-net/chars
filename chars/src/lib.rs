@@ -1,6 +1,4 @@
-#![cfg_attr(feature = "clippy", feature(plugin))] // Use clippy if it's available
-#![cfg_attr(feature = "clippy", plugin(clippy))]
-#![cfg_attr(feature = "clippy", deny(clippy))] // And make every warning fatal.
+#![deny(clippy::all)] // And make every default clippy warning fatal.
 
 #[macro_use]
 extern crate lazy_static;
