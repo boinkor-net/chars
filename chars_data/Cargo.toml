@@ -14,8 +14,8 @@ name = "chars_data"
 path = "src/lib.rs"
 
 [dependencies]
-regex = "1.10"
+regex = "1.11"
 lazy_static = "1.5.0"
 fst = "0.4"
-anyhow = "1.0.89"
+anyhow = "1.0.93"
 unicode_names2 = "0.6.0"
