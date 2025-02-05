@@ -1,5 +1,6 @@
 "updates":
-- "directory": "/"
+- "directories":
+  - "/"
   "groups":
     "cargo":
       "exclude-patterns":
@@ -11,7 +12,8 @@
   "schedule":
     "interval": "daily"
     "time": "04:00"
-- "directory": "/"
+- "directories":
+  - "/"
   "groups":
     "github-actions":
       "patterns":
