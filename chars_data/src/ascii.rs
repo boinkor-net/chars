@@ -132,7 +132,7 @@ fn process_ascii_nametable() -> Result<Vec<AsciiEntry>, io::Error> {
     Ok(entries)
 }
 
-impl<'a> fmt::Display for AsciiForDisplay<'a> {
+impl fmt::Display for AsciiForDisplay<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let val = self.val.clone();
         write!(
