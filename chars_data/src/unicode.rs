@@ -267,7 +267,7 @@ pub fn write_name_data(names: &fst_generator::Names, output: &Path) -> Result<()
     let multi_result_filename = output.join("names.rs");
     let mut rust_out = BufWriter::new(
         File::create(&multi_result_filename)
-            .context(format!("Creating {:?}", &multi_result_filename))?,
+            .context(format!("Creating {:?}", multi_result_filename))?,
     );
     let mut ambiguous_chars: Vec<String> = vec![String::new(); counter as usize];
     for (chars, i) in results {
